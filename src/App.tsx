@@ -4,6 +4,8 @@ import {Box} from "@mui/material";
 import { ThemeProviderWrapper } from "./context/ThemeContext";
 
 const MainPage = lazy(() => import('./pages/MainPage'));
+const EventsPage = lazy(() => import('./pages/EventsPage'));
+
 
 function Layout() {
   const location = useLocation();
@@ -21,6 +23,7 @@ function Layout() {
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<MainPage />} />
+            <Route path="/events" element={<EventsPage />} />
           </Routes>
         </Suspense>
       </Box>

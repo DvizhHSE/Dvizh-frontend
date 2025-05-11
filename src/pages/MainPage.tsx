@@ -118,6 +118,7 @@ const theme = useTheme();
     sx={{
     height : "100vh",
     padding: theme.spacing(19, 26),
+    background: theme.palette.background.default
     }}>
         <Box sx={{display: "flex",  
                 justifyContent: "center",
