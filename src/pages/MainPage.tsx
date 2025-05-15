@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import { Link } from "react-router-dom";
-import { Grid2, Button } from "@mui/material";
+import { Grid, Button } from "@mui/material";
 import { height, styled } from '@mui/system';
 import { useTheme } from "@mui/material/styles";
 import { Typography, Box } from '@mui/material';
@@ -33,7 +33,7 @@ const StartButton = styled(Button)(({ theme }) => ({
   fontSize: "20px",
   display: "inline-block",
   padding: theme.spacing(3, 26),
-  backgroundColor: theme.palette.purple.main,
+  backgroundColor: theme.palette.orange.main,
   color: theme.palette.text.white
 }))
 
@@ -43,12 +43,12 @@ const HeroSection = () => {
 const theme = useTheme();
   return (
     <Box>
-    <Grid2 container spacing={20}
+    <Grid container spacing={20}
     sx={{padding: theme.spacing(15, 35),
     height : "100vh",
     background: theme.palette.background.paper
     }}>
-        <Grid2 size={{ xs: 12, md: 6 }}>  
+        <Grid size={{ xs: 12, md: 6 }}>  
         <Box sx={{display: "flex",
             position: "relative",
             maxWidth: "300px",
@@ -106,15 +106,15 @@ const theme = useTheme();
                 </StartButton>
                 </StyledLink>
             </Box>
-        </Grid2>
-        <Grid2 size={{ xs: 12, md: 6 }}>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
             <ImageContainer>
             <img style ={{zIndex: 1}} src={picture} alt="illustration" />
             </ImageContainer> 
-        </Grid2>
-    </Grid2>
+        </Grid>
+    </Grid>
 
-    <Grid2 container
+    <Grid container
     sx={{
     height : "100vh",
     padding: theme.spacing(19, 26),
@@ -130,7 +130,7 @@ const theme = useTheme();
             На этой платформе вы можете:
             </Typography >
         </Box>
-        <Grid2 sx={{
+        <Grid sx={{
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -145,9 +145,9 @@ const theme = useTheme();
                 zIndex: 1,
             }} 
         />
-        </Grid2>
+        </Grid>
 
-    </Grid2>
+    </Grid>
     </Box>
   );
 };

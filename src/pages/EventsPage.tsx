@@ -29,7 +29,7 @@ const EventsContainer = styled(Box)(({ theme }) => ({
   background: theme.palette.background.paper,
   padding: '0 120px',
   position: 'relative',
-  width: '100%',
+  width: '99vw',
   boxSizing: 'border-box',
   paddingBottom: '40px'
 }));
