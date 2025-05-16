@@ -2,6 +2,7 @@ import React, { useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {Box} from "@mui/material";
 import { ThemeProviderWrapper } from "./context/ThemeContext";
+import Header from './components/Header';
 
 const MainPage = lazy(() => import('./pages/MainPage'));
 const EventsPage = lazy(() => import('./pages/EventsPage'));
@@ -17,7 +18,7 @@ function Layout() {
       flexDirection: "column", 
       height: "100vh" 
     }}>
-      {/* {isSpecialPage ? <Header/> : <AlternateHeader/>} */}
+      {!isSpecialPage && <Header />}
 
       <Box sx={{ flexGrow: 1 }}>
         <Suspense fallback={<div>Loading...</div>}>

@@ -4,7 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 declare module "@mui/material/styles" {
   interface Palette {
-    purple: {
+    orange: {
       light: string;
       main: string;
       dark: string;
@@ -13,7 +13,7 @@ declare module "@mui/material/styles" {
     };
   }
   interface PaletteOptions {
-    purple?: {
+    orange?: {
       light?: string;
       main?: string;
       dark?: string;
@@ -64,9 +64,9 @@ const getTheme = () =>
       },
       error: { main: "#810F0F" },
       grey: { 500: "#b0afaf" },
-      purple: {
+      orange: {
         light: "#B13EEA",
-        main: "#F16645",
+        main: "#F16645", //это main рыжий
         dark: "#755088",
         onHover: "238, 230, 255",
         toClick: "#D3C5F4",
