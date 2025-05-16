@@ -1,155 +1,97 @@
-import React, {useContext} from 'react';
-import { Link } from "react-router-dom";
-import { Grid, Button } from "@mui/material";
-import { height, styled } from '@mui/system';
+import { Grid, Typography, Box } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
-import { Typography, Box } from '@mui/material';
-import picture from '../assets/images/mainPagePeople.png';
-import logo from '../assets/images/logo.png';
-import activities from '../assets/images/mainPageActivities.png';
+import { styled } from '@mui/system';
+import "swiper/css";
+import "swiper/css/navigation";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import TeamMemberCard from "../components/EventCard";
+import eventImage from '../assets/images/event-image.png';
+import eventImage2 from '../assets/images/event-image-2.png';
+import eventImage3 from '../assets/images/event-image-3.png';
+import eventImage4 from '../assets/images/event-image-4.png';
+import eventImage5 from '../assets/images/event-image-5.png';
+import eventImage6 from '../assets/images/event-image-6.png';
+import eventImage7 from '../assets/images/event-image-7.png';
+import eventImage8 from '../assets/images/event-image-8.png';
+import eventImage9 from '../assets/images/event-image-9.png';
+
+const StyledSwiper = styled(Swiper)(({ theme }) =>({
+    "& .swiper-button-next, & .swiper-button-prev": {
+      color: theme.palette.text.primary,
+      width: "6%",
+    },
+  }))
+
+const eventCards = [
+    { id: 1, image: eventImage },
+    { id: 2, image: eventImage2 },
+    { id: 3, image: eventImage3 },
+    { id: 4, image: eventImage4 },
+    { id: 5, image: eventImage5 },
+    { id: 6, image: eventImage6 },
+    { id: 7, image: eventImage7 },
+    { id: 8, image: eventImage8 },
+    { id: 9, image: eventImage9 }
+  ];
 
 
-const ImageContainer = styled(Box)(({ theme }) => ({
-  display: "flex",
-  position: "relative",
-  maxWidth: "680px",
-  width: "100%",
-  height: "100%",
-  textAlign: "center",
-  alignItems: "center",
-  "& img": {
-    maxWidth: "100%",
-    width: "100%", 
-    height: "auto",
-  },
-}));
 
-const StyledLink = styled(Link)(({ theme }) => ({
-    textDecoration: "none",
-    color: theme.palette.text.white
-}));
+const MainPage = () => {
+  const theme = useTheme();
 
-const StartButton = styled(Button)(({ theme }) => ({
-  fontSize: "20px",
-  display: "inline-block",
-  padding: theme.spacing(3, 26),
-  backgroundColor: theme.palette.orange.main,
-  color: theme.palette.text.white
-}))
-
-
-
-const HeroSection = () => {
-const theme = useTheme();
   return (
-    <Box>
-    <Grid container spacing={20}
-    sx={{padding: theme.spacing(15, 35),
-    height : "100vh",
-    background: theme.palette.background.paper
-    }}>
-        <Grid size={{ xs: 12, md: 6 }}>  
-        <Box sx={{display: "flex",
-            position: "relative",
-            maxWidth: "300px",
-            width: "100%",
-            "& img": {
-                maxWidth: "100%",
-                width: "100%", 
-                height: "auto",
-            },
-            }}> 
-                <img style ={{zIndex: 1}} src={logo} alt="illustration" />
-            </Box>
+      <Box sx={{ 
+        width: '99vw', 
+        minHeight: '100vh',
+        margin: 0,
+        padding: theme.spacing(5, 30),
+        overflow: 'auto',
+        background: theme.palette.background.default
+      }}>
+        <Typography sx={{
+            fontSize: "52px",
+            fontWeight: "800",
 
-            <Box 
-            sx={{ 
-                display: "flex",  
-                alignItems: "center", 
-                width: "100%", 
-                paddingTop: theme.spacing(8)
-            }}
-            >
-                <Typography sx={{ color: theme.palette.text.primary, fontSize: "50px", fontWeight: "800"}}>
-                Платформа для создания и участия в мероприятиях
-                </Typography>
-            </Box>
+        }}>
+        Главная 
+        </Typography>
 
-            <Box 
-            sx={{ 
-                display: "flex",  
-                alignItems: "center", 
-                width: "100%", 
-                paddingTop: theme.spacing(8)
-            }}
-            >
-                <Typography 
-                sx={{ color: theme.palette.text.primary,
-                fontSize: "25px",
-                fontWeight: "600",
-                opacity: "0.8"
+        <Grid container sx={{paddingTop: "10px", width : "100"}}>
+            <Grid size={{ xs: 12 }} sx={{width: "100%"}}>
+                <Typography sx={{
+                    fontSize: "40px",
+                    color: theme.palette.orange.main,
+                    fontWeight: "700",
                 }}>
-                Создавай. Участвуй. Развивайся.
+                Избранное
                 </Typography>
-            </Box>
-            <Box 
-                sx={{ 
-                    display: "flex",  
-                    alignItems: "center", 
-                    width: "100%", 
-                    paddingTop: theme.spacing(8)
-                }}
+            </Grid>
+            <Grid sx={{width: "100%"}}>
+                <StyledSwiper
+                modules={[Navigation]}
+                navigation
+                slidesPerView={4}
+                spaceBetween={16}
+                style={{ width: "100%" }}
                 >
-                <StyledLink to="/">
-                <StartButton sx={{boxShadow : 3}} >
-                Начать
-                </StartButton>
-                </StyledLink>
-            </Box>
-        </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-            <ImageContainer>
-            <img style ={{zIndex: 1}} src={picture} alt="illustration" />
-            </ImageContainer> 
-        </Grid>
-    </Grid>
+                {eventCards.map((card) => (
+                    <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
+                    <TeamMemberCard
+                        category="Категория"
+                        name="Название"
+                        location="Где-то"
+                        data="12 июня, 13:00"
+                        imageUrl={card.image}
+                    />
+                </SwiperSlide>
+            ))}
+            </StyledSwiper>
+            </Grid>
+            </Grid>
 
-    <Grid container
-    sx={{
-    height : "100vh",
-    padding: theme.spacing(19, 26),
-    background: theme.palette.background.default
-    }}>
-        <Box sx={{display: "flex",  
-                justifyContent: "center",
-                width: "100%"}} >
-            <Typography sx={{ color: theme.palette.text.primary,
-                fontSize: "45px",
-                fontWeight: "600",
-                }}>
-            На этой платформе вы можете:
-            </Typography >
-        </Box>
-        <Grid sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            paddingBottom: theme.spacing(6)
-            }}>
-            <img src={activities} alt="illustration" 
-            style={{
-                width: "100%",
-                maxWidth: "1250px",
-                height: "auto",
-                zIndex: 1,
-            }} 
-        />
-        </Grid>
-
-    </Grid>
-    </Box>
-  );
-};
-
-export default HeroSection;
+      </Box>
+        );
+      };
+      
+      export default MainPage; 
