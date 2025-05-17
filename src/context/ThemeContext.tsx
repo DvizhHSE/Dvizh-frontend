@@ -5,27 +5,24 @@ import CssBaseline from "@mui/material/CssBaseline";
 declare module "@mui/material/styles" {
   interface Palette {
     orange: {
-      light: string;
+      one: string;
       main: string;
-      dark: string;
-      onHover: string;
-      toClick: string;
+      two: string;
+      three: string;
+      four: string;
     };
   }
   interface PaletteOptions {
     orange?: {
-      light?: string;
+      one?: string;
       main?: string;
-      dark?: string;
-      contrastText?: string;
-      onHover?: string;
-      toClick?: string;
+      two?: string;
+      three?: string;
+      four?: string;
     };
   }
   interface TypeBackground {
-    card: string;
-    cardContent: string;
-    textCard: string;
+    
   }
   interface Theme {
     shape: {
@@ -40,6 +37,9 @@ declare module "@mui/material/styles" {
     };
   }
   interface TypeText {
+    two: string,
+    three: string,
+    four: string,
     white: string;
     black: string;
   }
@@ -50,26 +50,25 @@ const getTheme = () =>
     palette: {
       mode: "light", 
       background: {
-        default: "#fff",
-        paper: "#F1F2F7", //это у нее light
-        card: "#eaddff",
-        cardContent: "#EEEAF6",
-        textCard: "#EEEEEE",
+        default: "#fff", // белый
+        paper: "#F1F2F7", //это light
       },
-      text: {
-        primary: "#2A303E",
-        secondary: "#fff",
+      text: { //тут dark
+        primary: "#2A303E", //1
+        two: "#555965",
+        three: "#7F838B",
+        four: "#7F838B",
         white: "#fff",
         black: "#000",
       },
       error: { main: "#810F0F" },
       grey: { 500: "#b0afaf" },
       orange: {
-        light: "#B13EEA",
+        one : "#E6CAC8",
         main: "#F16645", //это main рыжий
-        dark: "#755088",
-        onHover: "238, 230, 255",
-        toClick: "#D3C5F4",
+        two: "#F0AC9D",
+        three: "#EF8E76",
+        four: "#EA6948",
       },
     },
     typography: {

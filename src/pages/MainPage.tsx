@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
-import TeamMemberCard from "../components/EventCard";
+import EventCard from "../components/EventCard";
 import eventImage from '../assets/images/event-image.png';
 import eventImage2 from '../assets/images/event-image-2.png';
 import eventImage3 from '../assets/images/event-image-3.png';
@@ -18,8 +18,31 @@ import eventImage9 from '../assets/images/event-image-9.png';
 
 const StyledSwiper = styled(Swiper)(({ theme }) =>({
     "& .swiper-button-next, & .swiper-button-prev": {
-      color: theme.palette.text.primary,
-      width: "6%",
+    backgroundColor: "rgba(255, 255, 255, 0.6)",
+    color: theme.palette.orange.main,
+    width: "50px",
+    height: "50px",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    },
+
+    "& .swiper-button-next::after, & .swiper-button-prev::after": {
+    fontSize: "40px",
+    fontWeight: 800,
+    },
+
+    "& .swiper-button-next": {
+    top: "40%", 
+    right: "10px",
+    transform: "translateY(-50%)",
+    },
+
+    "& .swiper-button-prev": {
+    top: "40%",
+    left: "10px",
+    transform: "translateY(-50%)",
     },
   }))
 
@@ -63,6 +86,7 @@ const MainPage = () => {
                     fontSize: "40px",
                     color: theme.palette.orange.main,
                     fontWeight: "700",
+                    paddingBottom: theme.spacing(4)
                 }}>
                 Избранное
                 </Typography>
@@ -72,12 +96,114 @@ const MainPage = () => {
                 modules={[Navigation]}
                 navigation
                 slidesPerView={4}
-                spaceBetween={16}
+                spaceBetween={20}
                 style={{ width: "100%" }}
                 >
                 {eventCards.map((card) => (
                     <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
-                    <TeamMemberCard
+                    <EventCard
+                        category="Категория"
+                        name="Название"
+                        location="Где-то"
+                        data="12 июня, 13:00"
+                        imageUrl={card.image}
+                    />
+                </SwiperSlide>
+            ))}
+            </StyledSwiper>
+            </Grid>
+            </Grid>
+
+            <Grid container sx={{paddingTop: "10px", width : "100"}}>
+            <Grid size={{ xs: 12 }} sx={{width: "100%"}}>
+                <Typography sx={{
+                    fontSize: "40px",
+                    color: theme.palette.orange.main,
+                    fontWeight: "700",
+                    paddingBottom: theme.spacing(4)
+                }}>
+                Вы записаны
+                </Typography>
+            </Grid>
+            <Grid sx={{width: "100%"}}>
+                <StyledSwiper
+                modules={[Navigation]}
+                navigation
+                slidesPerView={4}
+                spaceBetween={20}
+                style={{ width: "100%" }}
+                >
+                {eventCards.map((card) => (
+                    <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
+                    <EventCard
+                        category="Категория"
+                        name="Название"
+                        location="Где-то"
+                        data="12 июня, 13:00"
+                        imageUrl={card.image}
+                    />
+                </SwiperSlide>
+            ))}
+            </StyledSwiper>
+            </Grid>
+            </Grid>
+
+            <Grid container sx={{paddingTop: "10px", width : "100"}}>
+            <Grid size={{ xs: 12 }} sx={{width: "100%"}}>
+                <Typography sx={{
+                    fontSize: "40px",
+                    color: theme.palette.orange.main,
+                    fontWeight: "700",
+                    paddingBottom: theme.spacing(4)
+                }}>
+                Сегодня
+                </Typography>
+            </Grid>
+            <Grid sx={{width: "100%"}}>
+                <StyledSwiper
+                modules={[Navigation]}
+                navigation
+                slidesPerView={4}
+                spaceBetween={20}
+                style={{ width: "100%" }}
+                >
+                {eventCards.map((card) => (
+                    <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
+                    <EventCard
+                        category="Категория"
+                        name="Название"
+                        location="Где-то"
+                        data="12 июня, 13:00"
+                        imageUrl={card.image}
+                    />
+                </SwiperSlide>
+            ))}
+            </StyledSwiper>
+            </Grid>
+            </Grid>
+
+            <Grid container sx={{paddingTop: "10px", width : "100"}}>
+            <Grid size={{ xs: 12 }} sx={{width: "100%"}}>
+                <Typography sx={{
+                    fontSize: "40px",
+                    color: theme.palette.orange.main,
+                    fontWeight: "700",
+                    paddingBottom: theme.spacing(4)
+                }}>
+                На этой неделе
+                </Typography>
+            </Grid>
+            <Grid sx={{width: "100%"}}>
+                <StyledSwiper
+                modules={[Navigation]}
+                navigation
+                slidesPerView={4}
+                spaceBetween={20}
+                style={{ width: "100%" }}
+                >
+                {eventCards.map((card) => (
+                    <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
+                    <EventCard
                         category="Категория"
                         name="Название"
                         location="Где-то"
