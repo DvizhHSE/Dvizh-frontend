@@ -1,4 +1,3 @@
-import React, { useContext } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { Grid, Typography, Box } from "@mui/material";
 import { styled } from '@mui/system';
@@ -34,7 +33,7 @@ const StyledLink = styled(Link, {
     left: isActive ? "0" : "50%",
     bottom: "-1em",
     width: isActive ? "100%" : "0",
-    height: "2px",
+    height: "3px",
     background: theme.palette.orange.main,
     transition: "width 0.5s ease, left 0.5s ease",
   },
@@ -72,7 +71,7 @@ const Header = () => {
         </Box>
         <Box sx={{ ml: "auto" }}>
           <StyledNav>
-            <StyledLink to="/" isActive={currentPath === "home"}> Главная </StyledLink>
+            <StyledLink to="/home" isActive={currentPath === "home"}> Главная </StyledLink>
             <StyledLink to="/events" isActive={currentPath === "events"}>  Мероприятия </StyledLink>
             <StyledLink to="/account" isActive={currentPath === "account"}> Личный кабинет </StyledLink>
             <StyledLink to="/participants" isActive={currentPath === "participants"}>  Участники </StyledLink>
