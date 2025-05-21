@@ -73,7 +73,7 @@ const Header = () => {
           <StyledNav>
             <StyledLink to="/home" isActive={currentPath === "home"}> Главная </StyledLink>
             <StyledLink to="/events" isActive={currentPath === "events"}>  Мероприятия </StyledLink>
-            <StyledLink to="/account" isActive={currentPath === "account"}> Личный кабинет </StyledLink>
+            <StyledLink to="/personal-account" isActive={currentPath === "personal-account"}> Личный кабинет </StyledLink>
             <StyledLink to="/participants" isActive={currentPath === "participants"}>  Участники </StyledLink>
           </StyledNav>
         </Box>
