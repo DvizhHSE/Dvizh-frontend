@@ -7,6 +7,7 @@ import Header from './components/Header';
 const StartPage = lazy(() => import('./pages/StartPage'));
 const EventsPage = lazy(() => import('./pages/EventsPage'));
 const MainPage = lazy(() => import('./pages/MainPage'));
+const PersonalAccount= lazy(() => import('./pages/PersonalAccount'));
 
 
 function Layout() {
@@ -27,6 +28,7 @@ function Layout() {
             <Route path="/" element={<StartPage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/home" element={<MainPage />} />
+            <Route path="/personal-account" element={<PersonalAccount />} />
           </Routes>
         </Suspense>
       </Box>
