@@ -1,6 +1,25 @@
-import { Grid, Typography, Box, Accordion, AccordionSummary, AccordionDetails, } from '@mui/material';
+import { Grid,
+    Button,
+    Typography,
+    Box,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    TextField,
+    MenuItem,
+    Select,
+    InputLabel,
+    FormControl,
+    Avatar,
+    IconButton} from '@mui/material';
 import { useTheme } from "@mui/material/styles";
+import { useState, useRef } from "react";
 import { styled } from '@mui/system';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Dayjs } from "dayjs";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import EventCard from "../components/EventCard";
@@ -29,11 +48,32 @@ const eventCards = [
 
   const PersonalAccount = () => {
     const theme = useTheme();
+    const [gender, setGender] = useState("");
+    const [birthDate, setBirthDate] = useState<Dayjs | null>(null);
+    const [image, setImage] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            setImage(reader.result as string);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+    const handleGenderChange = (event: React.MouseEvent<HTMLElement>, newGender: string) => {
+    if (newGender !== null) setGender(newGender);
+    };
 
+    const StyledButton = styled(Button)(({ theme }) =>({
+        background: theme.palette.orange.main,
+        width: "100%",
+        color: theme.palette.text.white
+    }))
     return (
         <Box sx={{ 
           width: '99vw', 
-          minHeight: '100vh',
           margin: 0,
           padding: theme.spacing(5, 30),
           overflow: 'auto',
@@ -64,10 +104,131 @@ const eventCards = [
                 <Typography sx={{ fontWeight: "bold", fontSize: "40px" }}>Личные данные</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                <Grid sx={{background: theme.palette.background.paper}}>
+                <Grid sx={{
+                    display: "flex",
+                    flexDirection: "column", 
+                    alignItems: "center",  
+                }}>
+                    <Box sx={{ 
+                        position: "relative",
+                        width: 160, 
+                        height: 160,}}>
+                        <Avatar
+                            src={image || ""}
+                            sx={{
+                            width: 160,
+                            height: 160,
+                            bgcolor: theme.palette.grey[300],                          
+                            }}
+                        />
+                        <input
+                            type="file"
+                            accept="image/*"
+                            ref={fileInputRef}
+                            style={{ display: "none" }}
+                            onChange={handleImageUpload}
+                        />
+                        <IconButton
+                            sx={{
+                            position: "absolute",
+                            bottom: 0,
+                            right: 0,
+                            bgcolor: "white",
+                            border: "1px solid #ccc",
+                            width: 50,
+                            height: 50,
+                            "&:hover": {
+                                bgcolor: theme.palette.background.light,
+                            },
+                            }}
+                            onClick={() => fileInputRef.current?.click()}
+                        >
+                            <PhotoCamera fontSize="small" />
+                        </IconButton>
+                    </Box>
+                    <Typography sx={{
+                        fontWeight: "500", 
+                        fontSize: "14px",
+                        paddingTop: theme.spacing(4)}}>
+                        Фото профиля
+                    </Typography>
+                    <Box sx={{
+                        width : "50%",                       
+                        }}>
+                    <TextField
+                        label="Имя"
+                        variant="outlined"
+                        fullWidth
+                        sx={{ paddingBottom: theme.spacing(6),
+                            marginTop: theme.spacing(6),
+                            "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
+                    />
+
+                    <TextField
+                        label="Фамилия"
+                        variant="outlined"
+                        fullWidth
+                        sx={{ paddingBottom: theme.spacing(6),
+                            "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
+                    />
+
+                    <FormControl fullWidth sx={{ paddingBottom: theme.spacing(6),
+                            "& .MuiOutlinedInput-root": { borderRadius: 1 } }}>
+                        <InputLabel id="gender-label">Пол</InputLabel>
+                        <Select
+                        labelId="gender-label"
+                        id="gender"
+                        value={gender}
+                        label="Пол"
+                        onChange={(e) => setGender(e.target.value)}
+                        >
+                        <MenuItem value={"male"}>Мужской</MenuItem>
+                        <MenuItem value={"female"}>Женский</MenuItem>
+                        </Select>
+                    </FormControl>
                     
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Дата рождения"
+                            value={birthDate}
+                            onChange={(newValue) => setBirthDate(newValue)}
+                            slotProps={{
+                            textField: {
+                                fullWidth: true,
+                                variant: "outlined",
+                                sx: {
+                                paddingBottom: theme.spacing(6),
+                                "& .MuiOutlinedInput-root": {
+                                    borderRadius: 2,
+                                },
+                                },
+                            },
+                            }}
+                        />
+                        </LocalizationProvider>
+                        
+                    <TextField
+                        label="Email"
+                        variant="outlined"
+                        fullWidth
+                        sx={{ paddingBottom: theme.spacing(6),
+                            "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
+                    />
+
+                    <TextField
+                        label="Номер телефона"
+                        variant="outlined"
+                        fullWidth
+                        sx={{ paddingBottom: theme.spacing(6),
+                            "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
+                    />
+                    <StyledButton sx={{boxShadow: 2}}>
+                        Сохранить изменения
+                    </StyledButton>
+
+                    </Box>
                 </Grid>
-                </AccordionDetails>
+                </AccordionDetails> 
             </Accordion>
 
             <Accordion disableGutters elevation={0} 

@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {Box} from "@mui/material";
 import { ThemeProviderWrapper } from "./context/ThemeContext";
