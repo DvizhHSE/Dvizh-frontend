@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Box, InputBase, Button, IconButton } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
 import { styled } from '@mui/system';
@@ -307,6 +308,7 @@ const DateFrame = styled(Box)({
 
 const EventsPage = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = React.useState<DateRange<Date>>([null, null]);
   const [favorites, setFavorites] = React.useState<Record<number, boolean>>({});
 
@@ -352,7 +354,7 @@ const EventsPage = () => {
             />
           </SearchContainer>
 
-          <PrimaryButton>
+          <PrimaryButton onClick={() => navigate('/create-event')}>
             <AddIcon sx={{ fontSize: '24px', marginRight: '8px' }} />
             Создать мероприятие
           </PrimaryButton>
@@ -434,9 +436,9 @@ const EventsPage = () => {
           {eventCards.map((card) => (
             <EventCard key={card.id}>
               <EventImage 
-                src={card.image}
-                alt={`Event ${card.id}`}
-              />
+                  src={card.image} 
+                  alt={`Event ${card.id}`} 
+                />
               <HeartButton onClick={() => handleHeartClick(card.id)}>
                 {favorites[card.id] ? (
                   <FavoriteIcon sx={{ color: '#EA6948', fontSize: '50px' }} />
@@ -466,4 +468,4 @@ const EventsPage = () => {
   );
 };
 
-export default EventsPage; 
+export default EventsPage;
