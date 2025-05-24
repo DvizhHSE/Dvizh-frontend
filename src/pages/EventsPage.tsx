@@ -27,7 +27,7 @@ import eventImage9 from '../assets/images/event-image-9.png';
 
 const EventsContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
-  background: theme.palette.background.paper,
+  background: theme.palette.background.default,
   padding: '0 120px',
   position: 'relative',
   width: '99vw',
