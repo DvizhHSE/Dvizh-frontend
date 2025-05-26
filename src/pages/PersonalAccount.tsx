@@ -31,6 +31,7 @@ import eventImage6 from '../assets/images/event-image-6.png';
 import eventImage7 from '../assets/images/event-image-7.png';
 import eventImage8 from '../assets/images/event-image-8.png';
 import eventImage9 from '../assets/images/event-image-9.png';
+import ahievement from '../assets/images/achievement_1.png';
 
 const eventCards = [
     { id: 1, image: eventImage },
@@ -69,6 +70,21 @@ const eventCards = [
         width: "100%",
         color: theme.palette.text.white
     }))
+
+    const ImageContainer = styled(Box)(({ theme }) => ({
+        display: "flex",
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        textAlign: "right",
+        alignItems: "center",
+        "& img": {
+          maxWidth: "100%",
+          width: "100%", 
+          height: "auto",
+        },
+      }));
+
     return (
         <Box sx={{ 
           width: '99vw', 
@@ -279,7 +295,13 @@ const eventCards = [
                 <Typography sx={{ fontWeight: "bold", fontSize: "40px" }}>Ваши достижения</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                <Typography>Ваши награды и достижения будут здесь.</Typography>
+                <Grid container spacing ={7} sx={{width: "100%"}}>
+                    <Grid size={{xs: 3}}>
+                        <ImageContainer>
+                            <img src={ahievement} alt="" /> 
+                        </ImageContainer>
+                    </Grid>
+                </Grid>
                 </AccordionDetails>
             </Accordion>
         </Box>
