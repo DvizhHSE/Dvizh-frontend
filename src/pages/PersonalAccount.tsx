@@ -20,9 +20,7 @@ import { Dayjs } from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
-import EventCard from "../components/EventCard";
+import EventCard2 from "../components/EventCard2";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import eventImage from '../assets/images/event-image.png';
 import eventImage2 from '../assets/images/event-image-2.png';
@@ -248,7 +246,19 @@ const eventCards = [
                 <Typography sx={{ fontWeight: "bold", fontSize: "40px" }}>Ваши мероприятия</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                <Typography>Список ваших мероприятий появится здесь.</Typography>
+                <Grid container spacing ={7} sx={{width: "100%"}}>
+                        {eventCards.map((card) => (
+                            <Grid size={{xs: 4}}>
+                            <EventCard2
+                                category="Категория"
+                                name="Название"
+                                location="Где-то"
+                                data="12 июня, 13:00"
+                                imageUrl={card.image}
+                            />
+                            </Grid>
+                        ))}
+                </Grid>
                 </AccordionDetails>
             </Accordion>
 
