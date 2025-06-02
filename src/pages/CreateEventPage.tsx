@@ -58,10 +58,17 @@ const CreateEventPage: React.FC = () => {
   const [date, setDate] = useState<Date | null>(new Date());
   const [time, setTime] = useState<Date | null>(new Date());
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -83,7 +90,7 @@ const CreateEventPage: React.FC = () => {
           Создать мероприятие
         </Typography>
 
-        {/* Блок загрузки фото справа */}
+        {/* Блок загрузки фото */}
         <Box sx={photoUploadWrapperStyles}>
           <Typography
             variant="body1"
@@ -111,12 +118,25 @@ const CreateEventPage: React.FC = () => {
                 color: "#999",
                 fontSize: 48,
                 textAlign: "center",
-                overflowWrap: "break-word",
-                padding: 2,
+                overflow: "hidden",
                 boxSizing: "border-box",
+                p: 0,
               }}
             >
-              {selectedFile ? selectedFile.name : "+"}
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Предпросмотр"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                />
+              ) : (
+                "+"
+              )}
             </Box>
           </label>
           <input
@@ -186,7 +206,7 @@ const CreateEventPage: React.FC = () => {
           />
         </Box>
 
-        {/* Первая строка: Дата и Время */}
+        {/* Дата и Время */}
         <Grid container spacing={3} sx={{ mt: 6, paddingLeft: "100px" }}>
           <Grid item xs={6} md={3}>
             <DatePicker
@@ -207,7 +227,7 @@ const CreateEventPage: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Вторая строка: Для кого мероприятие и Возрастное ограничение */}
+        {/* Для кого и возраст */}
         <Grid container spacing={3} sx={{ mt: 6, paddingLeft: "100px" }}>
           <Grid item xs={6} md={3}>
             <FormControl>
@@ -215,38 +235,17 @@ const CreateEventPage: React.FC = () => {
               <RadioGroup defaultValue="student">
                 <FormControlLabel
                   value="school"
-                  control={
-                    <Radio
-                      sx={{
-                        color: "#F16645",
-                        "&.Mui-checked": { color: "#F16645" },
-                      }}
-                    />
-                  }
+                  control={<Radio sx={{ color: "#F16645", "&.Mui-checked": { color: "#F16645" } }} />}
                   label="Школьник"
                 />
                 <FormControlLabel
                   value="student"
-                  control={
-                    <Radio
-                      sx={{
-                        color: "#F16645",
-                        "&.Mui-checked": { color: "#F16645" },
-                      }}
-                    />
-                  }
+                  control={<Radio sx={{ color: "#F16645", "&.Mui-checked": { color: "#F16645" } }} />}
                   label="Студент"
                 />
                 <FormControlLabel
                   value="parent"
-                  control={
-                    <Radio
-                      sx={{
-                        color: "#F16645",
-                        "&.Mui-checked": { color: "#F16645" },
-                      }}
-                    />
-                  }
+                  control={<Radio sx={{ color: "#F16645", "&.Mui-checked": { color: "#F16645" } }} />}
                   label="Родитель"
                 />
               </RadioGroup>
@@ -255,10 +254,7 @@ const CreateEventPage: React.FC = () => {
           <Grid item xs={6} md={3} sx={{ width: "500px", ml: "55px" }}>
             <FormControl fullWidth>
               <InputLabel>Возрастное ограничение</InputLabel>
-              <Select
-                defaultValue="0"
-                sx={{ backgroundColor: "#F4F7FC", width: "246px" }}
-              >
+              <Select defaultValue="0" sx={{ backgroundColor: "#F4F7FC", width: "246px" }}>
                 <MenuItem value="0">0+</MenuItem>
                 <MenuItem value="6">6+</MenuItem>
                 <MenuItem value="12">12+</MenuItem>
@@ -268,7 +264,7 @@ const CreateEventPage: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Описание под блоками */}
+        {/* Описание */}
         <Box sx={{ paddingLeft: "100px", marginTop: 4, width: "40%" }}>
           <TextField
             fullWidth
@@ -292,7 +288,7 @@ const CreateEventPage: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Кнопка Создать */}
+        {/* Кнопка */}
         <Box sx={{ paddingLeft: "100px", marginTop: 6, paddingBottom: 6, width: "40%" }}>
           <Button
             variant="contained"
