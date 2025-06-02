@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {Box} from "@mui/material";
 import { ThemeProviderWrapper } from "./context/ThemeContext";
 import Header from './components/Header';
+import CreateEventPage from './pages/CreateEventPage';
 
 const StartPage = lazy(() => import('./pages/StartPage'));
 const EventsPage = lazy(() => import('./pages/EventsPage'));
@@ -27,6 +28,7 @@ function Layout() {
             <Route path="/" element={<StartPage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/home" element={<MainPage />} />
+            <Route path="/create-event" element={<CreateEventPage />} />
           </Routes>
         </Suspense>
       </Box>
