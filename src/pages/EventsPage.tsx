@@ -157,7 +157,11 @@ const EventCard = styled(Box)(({ theme }) => ({
   marginTop: '40px',
   background: 'transparent',
   borderRadius: '10px',
-  position: 'relative'
+  position: 'relative',
+  cursor: 'pointer',
+  '&:hover': {
+    opacity: 0.9
+  }
 }));
 
 const HeartButton = styled(IconButton)({
@@ -306,6 +310,62 @@ const DateFrame = styled(Box)({
   top: '420px'
 });
 
+const AgeFrame = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: '0px',
+  gap: '5px',
+  position: 'absolute',
+  width: '127px',
+  height: '20.3px',
+  left: '0',
+  top: '450px'
+});
+
+const AudienceFrame = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: '0px',
+  gap: '5px',
+  position: 'absolute',
+  width: '127px',
+  height: '20.3px',
+  left: '0',
+  top: '480px'
+});
+
+const OrganizerFrame = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: '0px',
+  gap: '5px',
+  position: 'absolute',
+  width: '127px',
+  height: '20.3px',
+  left: '0',
+  top: '510px'
+});
+
+const InfoText = styled(Typography)({
+  width: '120px',
+  height: '20px',
+  fontFamily: 'Montserrat',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '14px',
+  lineHeight: '20px',
+  display: 'flex',
+  alignItems: 'center',
+  letterSpacing: '0.2px',
+  color: '#7F838B',
+  flex: 'none',
+  order: 1,
+  flexGrow: 0
+});
+
 const EventsPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -320,16 +380,129 @@ const EventsPage = () => {
   };
 
   const eventCards = [
-    { id: 1, image: eventImage },
-    { id: 2, image: eventImage2 },
-    { id: 3, image: eventImage3 },
-    { id: 4, image: eventImage4 },
-    { id: 5, image: eventImage5 },
-    { id: 6, image: eventImage6 },
-    { id: 7, image: eventImage7 },
-    { id: 8, image: eventImage8 },
-    { id: 9, image: eventImage9 }
+    { 
+      id: 1, 
+      image: eventImage,
+      category: 'Категория 1',
+      name: 'Мероприятие 1',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    },
+    { 
+      id: 2, 
+      image: eventImage2,
+      category: 'Категория 1',
+      name: 'Мероприятие 2',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    },
+    { 
+      id: 3, 
+      image: eventImage3,
+      category: 'Категория 1',
+      name: 'Мероприятие 3',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    },
+    { 
+      id: 4, 
+      image: eventImage4,
+      category: 'Категория 1',
+      name: 'Мероприятие 4',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    },
+    { 
+      id: 5, 
+      image: eventImage5,
+      category: 'Категория 1',
+      name: 'Мероприятие 5',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    },
+    { 
+      id: 6, 
+      image: eventImage6,
+      category: 'Категория 1',
+      name: 'Мероприятие 6',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    },
+    { 
+      id: 7, 
+      image: eventImage7,
+      category: 'Категория 1',
+      name: 'Мероприятие 7',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    },
+    { 
+      id: 8, 
+      image: eventImage8,
+      category: 'Категория 1',
+      name: 'Мероприятие 8',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    },
+    { 
+      id: 9, 
+      image: eventImage9,
+      category: 'Категория 1',
+      name: 'Мероприятие 9',
+      location: 'Место',
+      date: '12 июня 2025',
+      time: '13:00',
+      ageRestriction: '16+',
+      targetAudience: 'Студенты',
+      organizer: 'НИУ ВШЭ, hse@mail.ru',
+      description: 'Подробное описание мероприятия. Здесь может быть много текста о том, что будет происходить на мероприятии, кто организаторы, какие цели и задачи, что нужно взять с собой и т.д.'
+    }
   ];
+
+  const handleEventClick = (eventId: number) => {
+    const event = eventCards.find(card => card.id === eventId);
+    navigate(`/event/${eventId}`, { state: { eventData: event } });
+  };
 
   return (
     <Box sx={{ 
@@ -434,12 +607,18 @@ const EventsPage = () => {
           marginTop: '40px'
         }}>
           {eventCards.map((card) => (
-            <EventCard key={card.id}>
+            <EventCard 
+              key={card.id} 
+              onClick={() => handleEventClick(card.id)}
+            >
               <EventImage 
-                  src={card.image} 
-                  alt={`Event ${card.id}`} 
-                />
-              <HeartButton onClick={() => handleHeartClick(card.id)}>
+                src={card.image} 
+                alt={`Event ${card.id}`} 
+              />
+              <HeartButton onClick={(e) => {
+                e.stopPropagation();
+                handleHeartClick(card.id);
+              }}>
                 {favorites[card.id] ? (
                   <FavoriteIcon sx={{ color: '#EA6948', fontSize: '50px' }} />
                 ) : (
@@ -447,18 +626,18 @@ const EventsPage = () => {
                 )}
               </HeartButton>
               <CategoryText>
-                Категория 1
+                {card.category}
               </CategoryText>
               <EventTitle>
-                Мероприятие {card.id}
+                {card.name}
               </EventTitle>
               <Frame>
                 <LocationIcon />
-                <LocationText>Место</LocationText>
+                <LocationText>{card.location}</LocationText>
               </Frame>
               <DateFrame>
                 <CalendarIcon />
-                <DateText>12 июня, 13:00</DateText>
+                <DateText>{card.date}</DateText>
               </DateFrame>
             </EventCard>
           ))}
