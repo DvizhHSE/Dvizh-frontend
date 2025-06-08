@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {Box} from "@mui/material";
 import { ThemeProviderWrapper } from "./context/ThemeContext";
@@ -9,6 +9,7 @@ const StartPage = lazy(() => import('./pages/StartPage'));
 const EventsPage = lazy(() => import('./pages/EventsPage'));
 const MainPage = lazy(() => import('./pages/MainPage'));
 const EventDetailsPage = lazy(() => import('./pages/EventDetailsPage'));
+const PersonalAccount= lazy(() => import('./pages/PersonalAccount'));
 
 function Layout() {
   const location = useLocation();
@@ -30,6 +31,7 @@ function Layout() {
             <Route path="/event/:id" element={<EventDetailsPage />} />
             <Route path="/home" element={<MainPage />} />
             <Route path="/create-event" element={<CreateEventPage />} />
+            <Route path="/personal-account" element={<PersonalAccount />} />
           </Routes>
         </Suspense>
       </Box>
