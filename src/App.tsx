@@ -8,8 +8,8 @@ import CreateEventPage from './pages/CreateEventPage';
 const StartPage = lazy(() => import('./pages/StartPage'));
 const EventsPage = lazy(() => import('./pages/EventsPage'));
 const MainPage = lazy(() => import('./pages/MainPage'));
+const EventDetailsPage = lazy(() => import('./pages/EventDetailsPage'));
 const PersonalAccount= lazy(() => import('./pages/PersonalAccount'));
-
 
 function Layout() {
   const location = useLocation();
@@ -28,6 +28,7 @@ function Layout() {
           <Routes>
             <Route path="/" element={<StartPage />} />
             <Route path="/events" element={<EventsPage />} />
+            <Route path="/event/:id" element={<EventDetailsPage />} />
             <Route path="/home" element={<MainPage />} />
             <Route path="/create-event" element={<CreateEventPage />} />
             <Route path="/personal-account" element={<PersonalAccount />} />
