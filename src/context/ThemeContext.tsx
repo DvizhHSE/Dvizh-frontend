@@ -1,6 +1,7 @@
-import React, { createContext, ReactNode, useMemo } from "react";
+import { createContext, ReactNode, useMemo } from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { light } from "@mui/material/styles/createPalette";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -22,7 +23,8 @@ declare module "@mui/material/styles" {
     };
   }
   interface TypeBackground {
-    
+    light: string;
+    light3: string;
   }
   interface Theme {
     shape: {
@@ -51,7 +53,8 @@ const getTheme = () =>
       mode: "light", 
       background: {
         default: "#fff", // белый
-        paper: "#F1F2F7", //это light
+        light:  "#F1F2F7",
+        light3: "#F4F7FC",
       },
       text: { //тут dark
         primary: "#2A303E", //1
