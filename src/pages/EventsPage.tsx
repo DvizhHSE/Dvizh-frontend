@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from "react";
 import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Box, InputBase, Button, IconButton } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
