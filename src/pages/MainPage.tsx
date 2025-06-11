@@ -58,8 +58,6 @@ const eventCards = [
     { id: 9, image: eventImage9 }
   ];
 
-
-
 const MainPage = () => {
   const theme = useTheme();
 

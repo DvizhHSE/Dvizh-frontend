@@ -45,7 +45,7 @@ const theme = useTheme();
     <Grid container spacing={20}
     sx={{padding: theme.spacing(15, 35),
     height : "100vh",
-    background: theme.palette.background.paper
+    background: theme.palette.background.light
     }}>
         <Grid size={{ xs: 12, md: 6 }}>  
         <Box sx={{display: "flex",

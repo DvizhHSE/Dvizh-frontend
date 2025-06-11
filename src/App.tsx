@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {Box} from "@mui/material";
 import { ThemeProviderWrapper } from "./context/ThemeContext";
 import Header from './components/Header';
+import CreateEventPage from './pages/CreateEventPage';
 
 const StartPage = lazy(() => import('./pages/StartPage'));
 const EventsPage = lazy(() => import('./pages/EventsPage'));
@@ -17,7 +18,8 @@ const CodeEmailPage = lazy(() => import('./pages/CodeEmailPage'));
 const NewPasswordPage = lazy(() => import('./pages/NewPasswordPage'));
 const PasswordUpdatedPage = lazy(() => import('./pages/PasswordUpdatedPage'));
 const OnboardingFormPage = lazy(() => import('./pages/OnboardingFormPage'));
-
+const EventDetailsPage = lazy(() => import('./pages/EventDetailsPage'));
+const PersonalAccount= lazy(() => import('./pages/PersonalAccount'));
 
 function Layout() {
   const location = useLocation();
@@ -36,6 +38,7 @@ function Layout() {
           <Routes>
             <Route path="/" element={<StartPage />} />
             <Route path="/events" element={<EventsPage />} />
+            <Route path="/event/:id" element={<EventDetailsPage />} />
             <Route path="/home" element={<MainPage />} />
             <Route path="/enter" element={<EnterPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
@@ -46,8 +49,9 @@ function Layout() {
             <Route path="/new-password" element={<NewPasswordPage />} />
             <Route path="/password-updated" element={<PasswordUpdatedPage />} />
             <Route path="/onboarding-form" element={<OnboardingFormPage />} />
-            
-            
+         
+            <Route path="/create-event" element={<CreateEventPage />} />
+            <Route path="/personal-account" element={<PersonalAccount />} />
           </Routes>
         </Suspense>
       </Box>

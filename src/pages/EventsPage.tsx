@@ -1,5 +1,5 @@
-//import React from 'react';
 import * as React from "react";
+import { useNavigate } from 'react-router-dom';
 import { Grid, Typography, Box, InputBase, Button, IconButton } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
 import { styled } from '@mui/system';
@@ -15,19 +15,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { ru } from 'date-fns/locale';
 import { DateRange } from '@mui/x-date-pickers-pro';
-import eventImage from '../assets/images/event-image.png';
-import eventImage2 from '../assets/images/event-image-2.png';
-import eventImage3 from '../assets/images/event-image-3.png';
-import eventImage4 from '../assets/images/event-image-4.png';
-import eventImage5 from '../assets/images/event-image-5.png';
-import eventImage6 from '../assets/images/event-image-6.png';
-import eventImage7 from '../assets/images/event-image-7.png';
-import eventImage8 from '../assets/images/event-image-8.png';
-import eventImage9 from '../assets/images/event-image-9.png';
+import EventCardComponent from '../components/EventCard2';
+import eventsData from '../data/events.json';
+import { Event } from '../types/event';
 
 const EventsContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
-  background: theme.palette.background.paper,
+  background: theme.palette.background.default,
   padding: '0 120px',
   position: 'relative',
   width: '99vw',
@@ -157,7 +151,11 @@ const EventCard = styled(Box)(({ theme }) => ({
   marginTop: '40px',
   background: 'transparent',
   borderRadius: '10px',
-  position: 'relative'
+  position: 'relative',
+  cursor: 'pointer',
+  '&:hover': {
+    opacity: 0.9
+  }
 }));
 
 const HeartButton = styled(IconButton)({
@@ -306,29 +304,79 @@ const DateFrame = styled(Box)({
   top: '420px'
 });
 
+const AgeFrame = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: '0px',
+  gap: '5px',
+  position: 'absolute',
+  width: '127px',
+  height: '20.3px',
+  left: '0',
+  top: '450px'
+});
+
+const AudienceFrame = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: '0px',
+  gap: '5px',
+  position: 'absolute',
+  width: '127px',
+  height: '20.3px',
+  left: '0',
+  top: '480px'
+});
+
+const OrganizerFrame = styled(Box)({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: '0px',
+  gap: '5px',
+  position: 'absolute',
+  width: '127px',
+  height: '20.3px',
+  left: '0',
+  top: '510px'
+});
+
+const InfoText = styled(Typography)({
+  width: '120px',
+  height: '20px',
+  fontFamily: 'Montserrat',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '14px',
+  lineHeight: '20px',
+  display: 'flex',
+  alignItems: 'center',
+  letterSpacing: '0.2px',
+  color: '#7F838B',
+  flex: 'none',
+  order: 1,
+  flexGrow: 0
+});
+
 const EventsPage = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [dateRange, setDateRange] = React.useState<DateRange<Date>>([null, null]);
   const [favorites, setFavorites] = React.useState<Record<number, boolean>>({});
 
   const handleHeartClick = (eventId: number) => {
-    setFavorites(prev => ({
+    setFavorites((prev: Record<number, boolean>) => ({
       ...prev,
       [eventId]: !prev[eventId]
     }));
   };
 
-  const eventCards = [
-    { id: 1, image: eventImage },
-    { id: 2, image: eventImage2 },
-    { id: 3, image: eventImage3 },
-    { id: 4, image: eventImage4 },
-    { id: 5, image: eventImage5 },
-    { id: 6, image: eventImage6 },
-    { id: 7, image: eventImage7 },
-    { id: 8, image: eventImage8 },
-    { id: 9, image: eventImage9 }
-  ];
+  const handleEventClick = (eventId: number) => {
+    const event = eventsData.events.find(card => card.id === eventId);
+    navigate(`/event/${eventId}`, { state: { eventData: event } });
+  };
 
   return (
     <Box sx={{ 
@@ -353,7 +401,7 @@ const EventsPage = () => {
             />
           </SearchContainer>
 
-          <PrimaryButton>
+          <PrimaryButton onClick={() => navigate('/create-event')}>
             <AddIcon sx={{ fontSize: '24px', marginRight: '8px' }} />
             Создать мероприятие
           </PrimaryButton>
@@ -432,34 +480,41 @@ const EventsPage = () => {
           gap: '24px',
           marginTop: '40px'
         }}>
-          {eventCards.map((card) => (
-            <EventCard key={card.id}>
-              <EventImage 
-                src={card.image}
-                alt={`Event ${card.id}`}
+          {eventsData.events.map((card: Event) => (
+            <Box 
+              key={card.id} 
+              onClick={() => handleEventClick(card.id)}
+              sx={{ position: 'relative', cursor: 'pointer' }}
+            >
+              <EventCardComponent
+                category={card.category}
+                name={card.name}
+                location={card.location}
+                data={card.date}
+                imageUrl={card.image}
               />
-              <HeartButton onClick={() => handleHeartClick(card.id)}>
+              <IconButton 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleHeartClick(card.id);
+                }}
+                sx={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '10px',
+                  padding: 0,
+                  '&:hover': {
+                    background: 'transparent'
+                  }
+                }}
+              >
                 {favorites[card.id] ? (
                   <FavoriteIcon sx={{ color: '#EA6948', fontSize: '50px' }} />
                 ) : (
                   <FavoriteBorderIcon sx={{ color: '#EA6948', fontSize: '50px' }} />
                 )}
-              </HeartButton>
-              <CategoryText>
-                Категория 1
-              </CategoryText>
-              <EventTitle>
-                Мероприятие {card.id}
-              </EventTitle>
-              <Frame>
-                <LocationIcon />
-                <LocationText>Место</LocationText>
-              </Frame>
-              <DateFrame>
-                <CalendarIcon />
-                <DateText>12 июня, 13:00</DateText>
-              </DateFrame>
-            </EventCard>
+              </IconButton>
+            </Box>
           ))}
         </Box>
       </EventsContainer>
@@ -467,4 +522,4 @@ const EventsPage = () => {
   );
 };
 
-export default EventsPage; 
+export default EventsPage;
