@@ -14,6 +14,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Background = styled(Box)({
   height: "100vh", // ЗАМЕНА
+  width: "100vw",
   backgroundColor: "#fff",
   display: "flex",
   alignItems: "center",

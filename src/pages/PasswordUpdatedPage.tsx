@@ -4,6 +4,7 @@ import { styled } from "@mui/system";
 
 const Background = styled(Box)({
   height: "100vh",
+  width: "100vw",
   backgroundColor: "#fff",
   display: "flex",
   alignItems: "center",

@@ -23,7 +23,16 @@ const PersonalAccount= lazy(() => import('./pages/PersonalAccount'));
 
 function Layout() {
   const location = useLocation();
-  const isSpecialPage = location.pathname === "/";
+  const isSpecialPage = location.pathname === "/" ||
+   location.pathname === "/enter" ||
+    location.pathname === "/registration" ||
+    location.pathname === "/forgot-password" ||
+    location.pathname === "/phone-login" ||
+    location.pathname === "/code-phone" ||
+    location.pathname === "/code-email" ||
+    location.pathname === "/new-password" ||
+    location.pathname === "/password-updated" ||
+    location.pathname === "/onboarding-form";
 
   return (    
     <Box sx={{ 

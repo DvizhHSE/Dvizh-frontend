@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Background = styled(Box)({
   minHeight: "100vh",
+  width: "100vw",
   backgroundColor: "#fff",
   display: "flex",
   alignItems: "center",

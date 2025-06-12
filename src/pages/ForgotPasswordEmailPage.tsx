@@ -10,7 +10,7 @@ import { styled } from "@mui/system";
 
 import { useNavigate } from 'react-router-dom';
 const Background = styled(Box)({
-  width: "100%",
+  width: "100vw",
   height: "100vh",
   backgroundColor: "#fff",
   display: "flex",
