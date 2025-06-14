@@ -3,6 +3,7 @@ import { useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {Box} from "@mui/material";
 import { ThemeProviderWrapper } from "./context/ThemeContext";
+import { AuthProvider } from "./context/AuthContext";
 import Header from './components/Header';
 import CreateEventPage from './pages/CreateEventPage';
 import Footer from './components/Footer';
@@ -74,7 +75,7 @@ function Layout() {
           </Routes>
         </Suspense>
       </Box>
-      
+
       {!isSpecialPage2 && <Footer />}
     </Box>
   );
@@ -83,9 +84,11 @@ function Layout() {
 function App() {
   return (
     <ThemeProviderWrapper>
+      <AuthProvider>
         <BrowserRouter>
               <Layout />
         </BrowserRouter>
+      </AuthProvider>
     </ThemeProviderWrapper>
   );
 }
