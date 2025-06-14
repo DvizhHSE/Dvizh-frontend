@@ -1,6 +1,5 @@
 import {Grid, Card, CardMedia, CardContent, Typography, Box, Shadows } from "@mui/material";
 import { styled } from '@mui/system';
-import { Theme } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles"
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -72,7 +71,7 @@ const EventCard: React.FC<CardProps> = ({
     category,
     name,
     location,
-    data,
+    date,
     imageUrl,
  }) => {
     const theme = useTheme();
@@ -87,7 +86,7 @@ const EventCard: React.FC<CardProps> = ({
                 image={imageUrl}
                 alt={name}
                 sx = {{ boxShadow: 3, aspectRatio: "40 / 50", 
-                borderRadius: theme.shape.cardRadius}}
+                borderRadius: theme.shape.cardRadius, height: "384px"}}
             />
             </Grid>
 
@@ -108,7 +107,7 @@ const EventCard: React.FC<CardProps> = ({
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <CalendarIcon />
-                    <DateText>{data}</DateText>
+                    <DateText>{date}</DateText>
                 </Box>
             </CardContent>
             </Grid>

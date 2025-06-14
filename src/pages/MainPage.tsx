@@ -9,16 +9,6 @@ import { Navigation } from "swiper/modules";
 import api from "../api/axios";
 import { useAuth } from '../context/AuthContext';
 import EventCard from "../components/EventCard";
-import eventImage from '../assets/images/event-image.png';
-import eventImage2 from '../assets/images/event-image-2.png';
-import eventImage3 from '../assets/images/event-image-3.png';
-import eventImage4 from '../assets/images/event-image-4.png';
-import eventImage5 from '../assets/images/event-image-5.png';
-import eventImage6 from '../assets/images/event-image-6.png';
-import eventImage7 from '../assets/images/event-image-7.png';
-import eventImage8 from '../assets/images/event-image-8.png';
-import eventImage9 from '../assets/images/event-image-9.png';
-
 
 const StyledSwiper = styled(Swiper)(({ theme }) =>({
     "& .swiper-button-next, & .swiper-button-prev": {
@@ -50,41 +40,31 @@ const StyledSwiper = styled(Swiper)(({ theme }) =>({
     },
   }))
 
-const eventCards = [
-    { id: 1, image: eventImage },
-    { id: 2, image: eventImage2 },
-    { id: 3, image: eventImage3 },
-    { id: 4, image: eventImage4 },
-    { id: 5, image: eventImage5 },
-    { id: 6, image: eventImage6 },
-    { id: 7, image: eventImage7 },
-    { id: 8, image: eventImage8 },
-    { id: 9, image: eventImage9 }
-  ];
   type Event = {
     _id: string;
-    category: string;
+    category_id: string;
     name: string;
     location: string;
     date: string;
-    photo: string;
+    photo: string[];
   };
 
 const MainPage = () => {
   const theme = useTheme();
 
-  const [favorite, setFavorite] = useState([]);
-  const [planed, setPlanned] = useState([]);
-  const [today, setToday] = useState([]);
-  const [thisWeek, setThisWeek] = useState([]);
+  const [favorite, setFavorite] = useState<Event[]>([]);
+  const [planned, setPlanned] = useState<Event[]>([]);
+  const [today, setToday] = useState<Event[]>([]);
+  const [thisWeek, setThisWeek] = useState<Event[]>([]);
   const { userId } = useAuth();
 
   useEffect(() => {
-    if (!userId) return;
+    //if (!userId) return;
 
     api
-      .get(`/api/users/home/${userId}`)
+      .get(`/api/users/home/${userId}`) //684d865176ca9263a4bad628
       .then((res) => {
+        console.log("Получено с сервера:", res.data);
         setFavorite(res.data.favorite_events);
         setPlanned(res.data.planned_events);
         setToday(res.data.today_events);
@@ -136,8 +116,8 @@ const MainPage = () => {
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photo}
-                      category={card.category}
+                      imageUrl={card.photo?.[0] || ""}
+                      category={card.category_id}
                     />
                 </SwiperSlide>
             ))}
@@ -164,15 +144,15 @@ const MainPage = () => {
                 spaceBetween={20}
                 style={{ width: "100%" }}
                 >
-                {planed.map((card: Event) => (
+                {planned.map((card: Event) => (
                     <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
                       _id = {card._id}
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photo}
-                      category={card.category}
+                      imageUrl={card.photo[0]}
+                      category={card.category_id}
                     />
                 </SwiperSlide>
             ))}
@@ -206,8 +186,8 @@ const MainPage = () => {
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photo}
-                      category={card.category}
+                      imageUrl={card.photo?.[0] || ""}
+                      category={card.category_id}
                     />
                 </SwiperSlide>
             ))}
@@ -241,8 +221,8 @@ const MainPage = () => {
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photo}
-                      category={card.category}
+                      imageUrl={card.photo?.[0] || ""}
+                      category={card.category_id}
                     />
                 </SwiperSlide>
             ))}
