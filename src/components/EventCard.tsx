@@ -5,10 +5,11 @@ import { useTheme } from "@mui/material/styles"
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 interface CardProps {
+   _id: string;
     category: string;
     name: string;
     location: string;
-    data: string;
+    date: string;
     imageUrl: string;
   }
 

@@ -1,10 +1,13 @@
 import { Grid, Typography, Box } from '@mui/material';
+import { useEffect, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import { styled } from '@mui/system';
 import "swiper/css";
 import "swiper/css/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import api from "../api/axios";
+import { useAuth } from '../context/AuthContext';
 import EventCard from "../components/EventCard";
 import eventImage from '../assets/images/event-image.png';
 import eventImage2 from '../assets/images/event-image-2.png';
@@ -15,6 +18,7 @@ import eventImage6 from '../assets/images/event-image-6.png';
 import eventImage7 from '../assets/images/event-image-7.png';
 import eventImage8 from '../assets/images/event-image-8.png';
 import eventImage9 from '../assets/images/event-image-9.png';
+
 
 const StyledSwiper = styled(Swiper)(({ theme }) =>({
     "& .swiper-button-next, & .swiper-button-prev": {
@@ -57,9 +61,37 @@ const eventCards = [
     { id: 8, image: eventImage8 },
     { id: 9, image: eventImage9 }
   ];
+  type Event = {
+    _id: string;
+    category: string;
+    name: string;
+    location: string;
+    date: string;
+    photo: string;
+  };
 
 const MainPage = () => {
   const theme = useTheme();
+
+  const [favorite, setFavorite] = useState([]);
+  const [planed, setPlanned] = useState([]);
+  const [today, setToday] = useState([]);
+  const [thisWeek, setThisWeek] = useState([]);
+  const { userId } = useAuth();
+
+  useEffect(() => {
+    if (!userId) return;
+
+    api
+      .get(`/api/users/home/${userId}`)
+      .then((res) => {
+        setFavorite(res.data.favorite_events);
+        setPlanned(res.data.planned_events);
+        setToday(res.data.today_events);
+        setThisWeek(res.data.this_week_events);
+      })
+      .catch((err) => console.error("Ошибка загрузки данных:", err));
+  }, [userId]);
 
   return (
       <Box sx={{ 
@@ -97,14 +129,15 @@ const MainPage = () => {
                 spaceBetween={20}
                 style={{ width: "100%" }}
                 >
-                {eventCards.map((card) => (
-                    <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
+                {favorite.map((card: Event) => (
+                    <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
-                        category="Категория"
-                        name="Название"
-                        location="Где-то"
-                        data="12 июня, 13:00"
-                        imageUrl={card.image}
+                      _id = {card._id}
+                      name={card.name}
+                      location={card.location}
+                      date={card.date}
+                      imageUrl={card.photo}
+                      category={card.category}
                     />
                 </SwiperSlide>
             ))}
@@ -131,14 +164,15 @@ const MainPage = () => {
                 spaceBetween={20}
                 style={{ width: "100%" }}
                 >
-                {eventCards.map((card) => (
-                    <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
+                {planed.map((card: Event) => (
+                    <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
-                        category="Категория"
-                        name="Название"
-                        location="Где-то"
-                        data="12 июня, 13:00"
-                        imageUrl={card.image}
+                      _id = {card._id}
+                      name={card.name}
+                      location={card.location}
+                      date={card.date}
+                      imageUrl={card.photo}
+                      category={card.category}
                     />
                 </SwiperSlide>
             ))}
@@ -165,14 +199,15 @@ const MainPage = () => {
                 spaceBetween={20}
                 style={{ width: "100%" }}
                 >
-                {eventCards.map((card) => (
-                    <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
+                {today.map((card: Event) => (
+                    <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
-                        category="Категория"
-                        name="Название"
-                        location="Где-то"
-                        data="12 июня, 13:00"
-                        imageUrl={card.image}
+                      _id = {card._id}
+                      name={card.name}
+                      location={card.location}
+                      date={card.date}
+                      imageUrl={card.photo}
+                      category={card.category}
                     />
                 </SwiperSlide>
             ))}
@@ -199,14 +234,15 @@ const MainPage = () => {
                 spaceBetween={20}
                 style={{ width: "100%" }}
                 >
-                {eventCards.map((card) => (
-                    <SwiperSlide key={card.id} style={{ display: "flex", justifyContent: "center" }}>
+                {thisWeek.map((card: Event) => (
+                    <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
-                        category="Категория"
-                        name="Название"
-                        location="Где-то"
-                        data="12 июня, 13:00"
-                        imageUrl={card.image}
+                      _id = {card._id}
+                      name={card.name}
+                      location={card.location}
+                      date={card.date}
+                      imageUrl={card.photo}
+                      category={card.category}
                     />
                 </SwiperSlide>
             ))}
