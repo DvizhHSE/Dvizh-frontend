@@ -3,8 +3,10 @@ import { useState, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import {Box} from "@mui/material";
 import { ThemeProviderWrapper } from "./context/ThemeContext";
+import { AuthProvider } from "./context/AuthContext";
 import Header from './components/Header';
 import CreateEventPage from './pages/CreateEventPage';
+import Footer from './components/Footer';
 
 const StartPage = lazy(() => import('./pages/StartPage'));
 const EventsPage = lazy(() => import('./pages/EventsPage'));
@@ -24,7 +26,7 @@ const PersonalAccount= lazy(() => import('./pages/PersonalAccount'));
 function Layout() {
   const location = useLocation();
   const isSpecialPage = location.pathname === "/" ||
-   location.pathname === "/enter" ||
+    location.pathname === "/enter" ||
     location.pathname === "/registration" ||
     location.pathname === "/forgot-password" ||
     location.pathname === "/phone-login" ||
@@ -34,6 +36,15 @@ function Layout() {
     location.pathname === "/password-updated" ||
     location.pathname === "/onboarding-form";
 
+  const isSpecialPage2 = location.pathname === "/onboarding-form" ||
+    location.pathname === "/enter" ||
+    location.pathname === "/registration" ||
+    location.pathname === "/forgot-password" ||
+    location.pathname === "/phone-login" ||
+    location.pathname === "/code-phone" ||
+    location.pathname === "/code-email" ||
+    location.pathname === "/new-password" ||
+    location.pathname === "/password-updated";
   return (    
     <Box sx={{ 
       display: "flex", 
@@ -64,6 +75,8 @@ function Layout() {
           </Routes>
         </Suspense>
       </Box>
+
+      {!isSpecialPage2 && <Footer />}
     </Box>
   );
 }
@@ -71,9 +84,11 @@ function Layout() {
 function App() {
   return (
     <ThemeProviderWrapper>
+      <AuthProvider>
         <BrowserRouter>
               <Layout />
         </BrowserRouter>
+      </AuthProvider>
     </ThemeProviderWrapper>
   );
 }
