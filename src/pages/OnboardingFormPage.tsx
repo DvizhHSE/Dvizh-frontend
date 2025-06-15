@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 // Стили
 const Background = styled(Box)({
   height: "100vh",
+  width: "100vw",
   backgroundColor: "#fff",
   display: "flex",
   alignItems: "center",
