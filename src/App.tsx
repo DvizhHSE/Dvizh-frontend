@@ -22,6 +22,9 @@ const CodeEmailPage = lazy(() => import('./pages/CodeEmailPage'));
 const NewPasswordPage = lazy(() => import('./pages/NewPasswordPage'));
 const PasswordUpdatedPage = lazy(() => import('./pages/PasswordUpdatedPage'));
 const OnboardingFormPage = lazy(() => import('./pages/OnboardingFormPage'));
+const AdminParticipantsPage = lazy(() => import('./pages/AdminParticipantsPage'));
+const UserParticipantsPage = lazy(() => import('./pages/UserParticipantsPage'));
+const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
 
 const EventDetailsPage = lazy(() => import('./pages/EventDetailsPage'));
 const PersonalAccount= lazy(() => import('./pages/PersonalAccount'));
@@ -73,6 +76,9 @@ function Layout() {
             <Route path="/new-password" element={<NewPasswordPage />} />
             <Route path="/password-updated" element={<PasswordUpdatedPage />} />
             <Route path="/onboarding-form" element={<OnboardingFormPage />} />
+            <Route path="/admin-participants" element={<AdminParticipantsPage />} />
+            <Route path="/user-participants" element={<UserParticipantsPage />} />
+            <Route path="/user-profile" element={<UserProfilePage />} />
             
             
 
