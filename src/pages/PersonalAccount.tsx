@@ -76,7 +76,7 @@ const eventCards = [
 
     useEffect(() => {
         api
-          .get(`/api/users/684d865176ca9263a4bad628`) //684d865176ca9263a4bad628
+          .get(`/api/users/${userId}`) //684d865176ca9263a4bad628
           .then(res => {
             const data = res.data;
             setName(data.name);
@@ -290,7 +290,15 @@ const eventCards = [
                         sx={{ paddingBottom: theme.spacing(6),
                             "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
                     />
-                    <StyledButton onClick={handleSave} sx={{boxShadow: 2}}>
+                    <StyledButton onClick={handleSave} sx={{boxShadow : 3,
+                        outline: "none",
+                        "&:focus": {
+                        outline: "none",
+                        },
+                        "&.Mui-focusVisible": {
+                        outline: "none",
+                        },
+                    }} >
                         Сохранить изменения
                     </StyledButton>
 
