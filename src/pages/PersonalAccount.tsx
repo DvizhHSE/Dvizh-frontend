@@ -25,28 +25,16 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import EventCard2 from "../components/EventCard2";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useAuth } from '../context/AuthContext';
-import eventImage from '../assets/images/event-image.png';
-import eventImage2 from '../assets/images/event-image-2.png';
-import eventImage3 from '../assets/images/event-image-3.png';
-import eventImage4 from '../assets/images/event-image-4.png';
-import eventImage5 from '../assets/images/event-image-5.png';
-import eventImage6 from '../assets/images/event-image-6.png';
-import eventImage7 from '../assets/images/event-image-7.png';
-import eventImage8 from '../assets/images/event-image-8.png';
-import eventImage9 from '../assets/images/event-image-9.png';
 import ahievement from '../assets/images/achievement_1.png';
 
-const eventCards = [
-    { id: 1, image: eventImage },
-    { id: 2, image: eventImage2 },
-    { id: 3, image: eventImage3 },
-    { id: 4, image: eventImage4 },
-    { id: 5, image: eventImage5 },
-    { id: 6, image: eventImage6 },
-    { id: 7, image: eventImage7 },
-    { id: 8, image: eventImage8 },
-    { id: 9, image: eventImage9 }
-  ];
+type Event = {
+    _id: string;
+    category_id: string;
+    name: string;
+    location: string;
+    date: string;
+    photo: string[];
+  };
 
   const PersonalAccount = () => {
     const theme = useTheme();
@@ -59,7 +47,6 @@ const eventCards = [
     const [phone, setPhone] = useState("");
     const [image, setImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const { userId } = useAuth();
     // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     //     const file = event.target.files?.[0];
     //     if (file) {
@@ -74,7 +61,22 @@ const eventCards = [
     if (newGender !== null) setGender(newGender);
     };
 
+    const [events, setEvents] = useState<Event[]>([]);
+    const { userId } = useAuth();
+    
+      useEffect(() => {
+        //if (!userId) return;
+        api
+          .get(`/api/users/684d865176ca9263a4bad628/events`) //684d865176ca9263a4bad628
+          .then((res) => {
+            console.log("Получено с сервера:", res.data);
+            setEvents(res.data);
+          })
+          .catch((err) => console.error("Ошибка загрузки данных:", err));
+      }, [userId]);
+      
     useEffect(() => {
+        //if (!userId) return;
         api
           .get(`/api/users/${userId}`) //684d865176ca9263a4bad628
           .then(res => {
@@ -196,6 +198,13 @@ const eventCards = [
                             border: "1px solid #ccc",
                             width: 50,
                             height: 50,
+                            outline: "none",
+                            "&:focus": {
+                            outline: "none",
+                            },
+                            "&.Mui-focusVisible": {
+                            outline: "none",
+                            },
                             "&:hover": {
                                 bgcolor: theme.palette.background.light,
                             },
@@ -325,15 +334,16 @@ const eventCards = [
                 </AccordionSummary>
                 <AccordionDetails>
                 <Grid container spacing ={7} sx={{width: "100%"}}>
-                        {eventCards.map((card) => (
+                    {events.map((card: Event) => (
                             <Grid size={{xs: 4}}>
                             <EventCard2
-                                category="Категория"
-                                name="Название"
-                                location="Где-то"
-                                data="12 июня, 13:00"
-                                imageUrl={card.image}
-                            />
+                                _id = {card._id}
+                                name={card.name}
+                                location={card.location}
+                                data={card.date}
+                                imageUrl={card.photo?.[0] || ""}
+                                category={card.category_id}
+                    />
                             </Grid>
                         ))}
                 </Grid>
