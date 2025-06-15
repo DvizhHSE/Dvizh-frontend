@@ -46,7 +46,7 @@ const StyledLink = styled(Link, {
 const Header = () => {
   const theme = useTheme();
   const location = useLocation();
-  const currentPath = location.pathname.split("/")[1] || "home";
+  const currentPath = location.pathname.split("/")[1] || "";
   return (
     <StyledHeader>
       <Grid
@@ -72,7 +72,7 @@ const Header = () => {
         <Box sx={{ ml: "auto" }}>
           <StyledNav>
             <StyledLink to="/home" isActive={currentPath === "home"}> Главная </StyledLink>
-            <StyledLink to="/events" isActive={currentPath === "events"}>  Мероприятия </StyledLink>
+            <StyledLink to="/events" isActive={currentPath.startsWith("event") || currentPath === "create-event"}>  Мероприятия </StyledLink>
             <StyledLink to="/personal-account" isActive={currentPath === "personal-account"}> Личный кабинет </StyledLink>
             <StyledLink to="/participants" isActive={currentPath === "participants"}>  Участники </StyledLink>
           </StyledNav>

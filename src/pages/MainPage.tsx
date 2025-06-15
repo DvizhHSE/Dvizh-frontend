@@ -59,7 +59,7 @@ const MainPage = () => {
   const { userId } = useAuth();
 
   useEffect(() => {
-    //if (!userId) return;
+    if (!userId) return;
 
     api
       .get(`/api/users/home/${userId}`) //684d865176ca9263a4bad628

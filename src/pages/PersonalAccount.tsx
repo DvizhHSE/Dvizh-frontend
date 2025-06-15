@@ -13,15 +13,18 @@ import { Grid,
     Avatar,
     IconButton} from '@mui/material';
 import { useTheme } from "@mui/material/styles";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { styled } from '@mui/system';
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+import api from "../api/axios";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import EventCard2 from "../components/EventCard2";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useAuth } from '../context/AuthContext';
 import eventImage from '../assets/images/event-image.png';
 import eventImage2 from '../assets/images/event-image-2.png';
 import eventImage3 from '../assets/images/event-image-3.png';
@@ -47,23 +50,65 @@ const eventCards = [
 
   const PersonalAccount = () => {
     const theme = useTheme();
+    const [userData, setUserData] = useState(null);
     const [gender, setGender] = useState("");
     const [birthDate, setBirthDate] = useState<Dayjs | null>(null);
+    const [name, setName] = useState("");
+    const [surname, setSurname] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
     const [image, setImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            setImage(reader.result as string);
-          };
-          reader.readAsDataURL(file);
-        }
-      };
+    const { userId } = useAuth();
+    // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = event.target.files?.[0];
+    //     if (file) {
+    //       const reader = new FileReader();
+    //       reader.onload = () => {
+    //         setImage(reader.result as string);
+    //       };
+    //       reader.readAsDataURL(file);
+    //     }
+    //   };
     const handleGenderChange = (event: React.MouseEvent<HTMLElement>, newGender: string) => {
     if (newGender !== null) setGender(newGender);
     };
+
+    useEffect(() => {
+        api
+          .get(`/api/users/684d865176ca9263a4bad628`) //684d865176ca9263a4bad628
+          .then(res => {
+            const data = res.data;
+            setName(data.name);
+            setEmail(data.email);
+            setImage(data.profile_picture);
+            setGender(data.gender || "");
+            setBirthDate(data.birth_date ? dayjs(data.birth_date) : null);
+          })
+          .catch(err => console.error("Ошибка загрузки профиля:", err));
+      }, [userId]);
+
+      const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+          const imageUrl = URL.createObjectURL(file);
+          setImage(imageUrl); 
+        }
+      };
+      
+
+  const handleSave = () => {
+    api
+      .put(`/api/users/${userId}`, {
+      name,
+      email,
+      gender,
+      birth_date: birthDate ? birthDate.toISOString() : null,
+      profile_picture: image
+    })
+    .then(() => alert("Изменения сохранены"))
+    .catch(err => console.error("Ошибка при сохранении:", err));
+  };
 
     const StyledButton = styled(Button)(({ theme }) =>({
         background: theme.palette.orange.main,
@@ -173,6 +218,8 @@ const eventCards = [
                         label="Имя"
                         variant="outlined"
                         fullWidth
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         sx={{ paddingBottom: theme.spacing(6),
                             marginTop: theme.spacing(6),
                             "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
@@ -182,6 +229,8 @@ const eventCards = [
                         label="Фамилия"
                         variant="outlined"
                         fullWidth
+                        value={surname}
+                        onChange={(e) => setSurname(e.target.value)}
                         sx={{ paddingBottom: theme.spacing(6),
                             "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
                     />
@@ -198,6 +247,7 @@ const eventCards = [
                         >
                         <MenuItem value={"male"}>Мужской</MenuItem>
                         <MenuItem value={"female"}>Женский</MenuItem>
+                        <MenuItem value={"unknown"}>Не указано</MenuItem>
                         </Select>
                     </FormControl>
                     
@@ -225,6 +275,8 @@ const eventCards = [
                         label="Email"
                         variant="outlined"
                         fullWidth
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)}
                         sx={{ paddingBottom: theme.spacing(6),
                             "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
                     />
@@ -233,10 +285,12 @@ const eventCards = [
                         label="Номер телефона"
                         variant="outlined"
                         fullWidth
+                        value={phone} 
+                        onChange={(e) => setPhone(e.target.value)}
                         sx={{ paddingBottom: theme.spacing(6),
                             "& .MuiOutlinedInput-root": { borderRadius: 1 } }}
                     />
-                    <StyledButton sx={{boxShadow: 2}}>
+                    <StyledButton onClick={handleSave} sx={{boxShadow: 2}}>
                         Сохранить изменения
                     </StyledButton>
 
