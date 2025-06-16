@@ -1,6 +1,6 @@
 export interface Event {
-  id: string;
-  image: string[];
+  id: string; // или "_id" если API возвращает "_id"
+  image: string; // строка, не массив
   category: string;
   name: string;
   location: string;
@@ -8,10 +8,10 @@ export interface Event {
   time: string;
   ageRestriction: string;
   targetAudience: string;
-  organizer: string[];
+  organizer: string[]; // если точно массив
   description: string;
 }
 
 export interface EventsData {
   events: Event[];
-} 
+}

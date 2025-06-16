@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useNavigate } from 'react-router-dom';
-import { Grid, Typography, Box, InputBase, Button, IconButton } from '@mui/material';
+import { Box, Typography, InputBase, Button, IconButton } from '@mui/material';
 import { useTheme } from "@mui/material/styles";
 import { styled } from '@mui/system';
 import SearchIcon from '@mui/icons-material/Search';
@@ -8,15 +8,12 @@ import AddIcon from '@mui/icons-material/Add';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers-pro';
 import { AdapterDateFns } from '@mui/x-date-pickers-pro/AdapterDateFns';
 import { ru } from 'date-fns/locale';
 import { DateRange } from '@mui/x-date-pickers-pro';
 import EventCardComponent from '../components/EventCard2';
-import eventsData from '../data/events.json';
 import { Event } from '../types/event';
 import api from "../api/axios";
 import { useEffect, useState } from "react";
@@ -144,7 +141,10 @@ const EventsPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [dateRange, setDateRange] = React.useState<DateRange<Date>>([null, null]);
-  const [favorites, setFavorites] = React.useState<Record<number, boolean>>({});
+  
+  // Изменено: ключи favorites — строки (id событий)
+  const [favorites, setFavorites] = React.useState<Record<string, boolean>>({});
+  
   const [events, setEvents] = useState<Event[]>([]);
   const { userId } = useAuth();
 
@@ -158,8 +158,9 @@ const EventsPage = () => {
       .catch((err) => console.error("Ошибка загрузки данных:", err));
   }, [userId]);
 
-  const handleHeartClick = (eventId: number) => {
-    setFavorites((prev: Record<number, boolean>) => ({
+  // eventId — строка
+  const handleHeartClick = (eventId: string) => {
+    setFavorites((prev: Record<string, boolean>) => ({
       ...prev,
       [eventId]: !prev[eventId]
     }));
@@ -167,6 +168,10 @@ const EventsPage = () => {
 
   const handleEventClick = (eventId: string) => {
     const event = events.find(card => card.id === eventId);
+    if (!event) {
+      console.error(`Событие с id=${eventId} не найдено`);
+      return;
+    }
     navigate(`/event/${eventId}`, { state: { eventData: event } });
   };
 
@@ -289,22 +294,15 @@ const EventsPage = () => {
                 onClick={(e) => {
                   e.stopPropagation();
                   handleHeartClick(card.id);
-                }}
+                }} 
                 sx={{
                   position: 'absolute',
-                  top: '10px',
-                  right: '10px',
-                  padding: 0,
-                  '&:hover': {
-                    background: 'transparent'
-                  }
+                  top: 12,
+                  right: 12,
+                  color: favorites[card.id] ? '#EA6948' : '#7F838B'
                 }}
               >
-                {favorites[card.id] ? (
-                  <FavoriteIcon sx={{ color: '#EA6948', fontSize: '50px' }} />
-                ) : (
-                  <FavoriteBorderIcon sx={{ color: '#EA6948', fontSize: '50px' }} />
-                )}
+                {favorites[card.id] ? <FavoriteIcon /> : <FavoriteBorderIcon />}
               </IconButton>
             </Box>
           ))}
