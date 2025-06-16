@@ -99,10 +99,20 @@ const theme = useTheme();
                     paddingTop: theme.spacing(8)
                 }}
                 >
-                <StyledLink to="/">
-                <StartButton sx={{boxShadow : 3}} >
-                Начать
-                </StartButton>
+                <StyledLink to="/enter">
+                    <StartButton sx={{boxShadow : 3,
+                        outline: "none",
+                        "&:focus": {
+                          outline: "none",
+                          boxShadow: "none",
+                        },
+                        "&.Mui-focusVisible": {
+                          outline: "none",
+                          boxShadow: "none",
+                        },
+                    }} >
+                    Начать
+                    </StartButton>
                 </StyledLink>
             </Box>
         </Grid>
