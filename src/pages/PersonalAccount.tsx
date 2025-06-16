@@ -48,27 +48,7 @@ type Event = {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-    // const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = e.target.files?.[0]; // берём только один файл
-    //     if (!file ) return;
-      
-    //     const formData = new FormData();
-    //     formData.append("profile_picture", file); // добавляем только один файл
-      
-    //     try {
-    //       const res = await api.patch(`/api/user/684f3500f6324a1adb262185/profile-picture`, formData );
-      
-    //       if (res.data?.profile_picture) {
-    //         setImage(res.data.profile_picture);
-    //       }
-      
-    //       alert("Фото успешно загружено");
-    //     } catch (err) {
-    //       console.error("Ошибка загрузки фото:", err);
-    //       alert("Ошибка при загрузке фото");
-    //     }
-    //   };     
+         
     
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -126,19 +106,19 @@ type Event = {
   // };
   const handleSave = async () => {
     let uploadedImageUrl = imageUrl;
-  
+
     if (selectedFile) {
       const formData = new FormData();
-      formData.append("profile_picture", selectedFile);
+      formData.append("file", selectedFile);
   
       try {
-        const res = await api.patch(`/api/users/${userId}/profile-picture`, formData, {
+        const res = await api.patch("/api/images/upload-picture", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
   
-        uploadedImageUrl = res.data?.profile_picture; // ссылка от сервера
+        uploadedImageUrl = res.data?.profile_picture;
         if (!uploadedImageUrl) throw new Error("Сервер не вернул ссылку на фото");
   
       } catch (error) {
@@ -156,7 +136,7 @@ type Event = {
         sex: gender,
         birthday: birthDate ? birthDate.format("YYYY-MM-DDT00:00:00") : null,
         phone_number: phone,
-        profile_picture: uploadedImageUrl 
+        profile_picture: uploadedImageUrl,
       });
   
       alert("Изменения сохранены");
@@ -165,6 +145,7 @@ type Event = {
       alert("Ошибка при сохранении данных");
     }
   };
+  
   
 
     const StyledButton = styled(Button)(({ theme }) =>({
@@ -329,7 +310,11 @@ type Event = {
                                 "& .MuiOutlinedInput-root": {
                                     borderRadius: 2,
                                 },
+                                "& .MuiInputAdornment-root button": {
+                                  outline: "none",
+                                  boxShadow: "none",
                                 },
+                              }
                             },
                             }}
                         />
