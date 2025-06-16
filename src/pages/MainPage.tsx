@@ -9,6 +9,8 @@ import { Navigation } from "swiper/modules";
 import api from "../api/axios";
 import { useAuth } from '../context/AuthContext';
 import EventCard from "../components/EventCard";
+import { Event } from '../types/event';
+import { useNavigate } from 'react-router-dom';
 
 const StyledSwiper = styled(Swiper)(({ theme }) =>({
     "& .swiper-button-next, & .swiper-button-prev": {
@@ -40,26 +42,19 @@ const StyledSwiper = styled(Swiper)(({ theme }) =>({
     },
   }))
 
-  type Event = {
-    _id: string;
-    category_id: string;
-    name: string;
-    location: string;
-    date: string;
-    photo: string[];
-  };
-
 const MainPage = () => {
   const theme = useTheme();
-
+  const navigate = useNavigate();
   const [favorite, setFavorite] = useState<Event[]>([]);
   const [planned, setPlanned] = useState<Event[]>([]);
   const [today, setToday] = useState<Event[]>([]);
   const [thisWeek, setThisWeek] = useState<Event[]>([]);
   const { userId } = useAuth();
-
+  const handleEventClick = (eventId: string) => {
+    navigate(`/event/${eventId}`, { state: { eventData: eventId } });
+  };
   useEffect(() => {
-    //if (!userId) return;
+    if (!userId) return;
 
     api
       .get(`/api/users/home/${userId}`) //684d865176ca9263a4bad628
@@ -110,13 +105,14 @@ const MainPage = () => {
                 style={{ width: "100%" }}
                 >
                 {favorite.map((card: Event) => (
-                    <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
+                    <SwiperSlide key={card._id}
+                    onClick={() => handleEventClick(card._id)} style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
                       _id = {card._id}
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photo?.[0] || ""}
+                      imageUrl={card.photos?.[0] || ""}
                       category={card.category_id}
                     />
                 </SwiperSlide>
@@ -145,13 +141,14 @@ const MainPage = () => {
                 style={{ width: "100%" }}
                 >
                 {planned.map((card: Event) => (
-                    <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
+                    <SwiperSlide key={card._id} 
+                    onClick={() => handleEventClick(card._id)} style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
                       _id = {card._id}
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photo[0]}
+                      imageUrl={card.photos[0]}
                       category={card.category_id}
                     />
                 </SwiperSlide>
@@ -180,13 +177,14 @@ const MainPage = () => {
                 style={{ width: "100%" }}
                 >
                 {today.map((card: Event) => (
-                    <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
+                    <SwiperSlide key={card._id}
+                    onClick={() => handleEventClick(card._id)}  style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
                       _id = {card._id}
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photo?.[0] || ""}
+                      imageUrl={card.photos?.[0] || ""}
                       category={card.category_id}
                     />
                 </SwiperSlide>
@@ -215,13 +213,14 @@ const MainPage = () => {
                 style={{ width: "100%" }}
                 >
                 {thisWeek.map((card: Event) => (
-                    <SwiperSlide key={card._id} style={{ display: "flex", justifyContent: "center" }}>
+                    <SwiperSlide key={card._id} 
+                    onClick={() => handleEventClick(card._id)} style={{ display: "flex", justifyContent: "center" }}>
                     <EventCard
                       _id = {card._id}
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photo?.[0] || ""}
+                      imageUrl={card.photos?.[0] || ""}
                       category={card.category_id}
                     />
                 </SwiperSlide>

@@ -26,15 +26,8 @@ import EventCard2 from "../components/EventCard2";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useAuth } from '../context/AuthContext';
 import ahievement from '../assets/images/achievement_1.png';
-
-type Event = {
-  _id: string;
-  category_id: string;
-  name: string;
-  location: string;
-  date: string;
-  photo: string;
-};
+import { useNavigate } from 'react-router-dom';
+import { Event } from '../types/event';
 
 const PersonalAccount = () => {
   const theme = useTheme();
@@ -48,7 +41,7 @@ const PersonalAccount = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-       
+  const navigate = useNavigate();
   
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -56,6 +49,10 @@ const PersonalAccount = () => {
       setSelectedFile(file);
       setImageUrl(URL.createObjectURL(file)); // для предпросмотра
     }
+  };
+
+  const handleEventClick = (eventId: string) => {
+    navigate(`/event/${eventId}`, { state: { eventData: eventId } });
   };
   
 
@@ -375,13 +372,13 @@ const handleSave = async () => {
               <AccordionDetails>
               <Grid container spacing ={7} sx={{width: "100%"}}>
                   {events.map((card: Event) => (
-                          <Grid size={{xs: 4}} key={card._id}>
+                          <Grid size={{xs: 4}} key={card._id} onClick={() => handleEventClick(card._id)}>
                           <EventCard2
                               _id = {card._id}
                               name={card.name}
                               location={card.location}
                               data={card.date}
-                              imageUrl={card.photo}
+                              imageUrl={card.photos?.[0] || ""}
                               category={card.category_id}
                   />
                           </Grid>
