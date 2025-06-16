@@ -1,14 +1,14 @@
 export interface Event {
-  id: string; // или "_id" если API возвращает "_id"
-  image: string; // строка, не массив
-  category: string;
+  _id: string;
+  photos: string[]; // массив изображений
+  category_id: string;
   name: string;
   location: string;
   date: string;
-  time: string;
-  ageRestriction: string;
-  targetAudience: string;
-  organizer: string[]; // если точно массив
+  time?: string;
+  age_limit: string;
+  for_roles: string[]; // массив ролей
+  organizers: string[]; // массив строк
   description: string;
 }
 

@@ -5,8 +5,7 @@ import { styled } from '@mui/system';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import api from "../api/axios";
-import { useAuth } from '../context/AuthContext';
+import api from '../api/axios';
 
 const Container = styled(Box)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -181,24 +180,24 @@ const Description = styled(Typography)({
 const EventDetailsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { eventData } = location.state || {};
+  const eventData = location.state?.eventData;
   const [liked, setLiked] = useState(false);
-  const [eventDetails, setEventDetails] = useState(eventData || {});
-  const { userId } = useAuth();
+  const [eventDetails, setEventDetails] = useState<any>(null);
 
   useEffect(() => {
-    if (!eventData?.id) return;
+    if (!eventData) return;
+
 
     api
-      .get(`/api/events/${eventData.id}`)
-      .then(res => {
+      .get(`/api/events/${eventData}`)
+      .then((res) => {
         setEventDetails(res.data);
       })
-      .catch(err => console.error("Ошибка загрузки события:", err));
-  }, [eventData?.id]);
+      .catch((err) => console.error('Ошибка загрузки события:', err));
+  }, [eventData]);
 
-  if (!eventDetails || !eventDetails.id) {
-    return <div>Event not found</div>;
+  if (!eventDetails) {
+    return <div>Загрузка...</div>;
   }
 
   return (
@@ -224,12 +223,24 @@ const EventDetailsPage = () => {
             </InfoRow>
             <InfoRow>
               <InfoLabel>Время:</InfoLabel>
-              <InfoValue>{new Date(eventDetails.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</InfoValue>
+              <InfoValue>
+                {new Date(eventDetails.date).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </InfoValue>
             </InfoRow>
-
+            <InfoRow>
+              <InfoLabel>Возрастное ограничение:</InfoLabel>
+              <InfoValue>{eventDetails.age_limit || 'Нет'}</InfoValue>
+            </InfoRow>
+            <InfoRow>
+              <InfoLabel>Для кого:</InfoLabel>
+              <InfoValue>{eventDetails.for_roles?.join(', ') || 'Все'}</InfoValue>
+            </InfoRow>
             <InfoRow>
               <InfoLabel>Организаторы:</InfoLabel>
-              <InfoValue>{eventDetails.organizers?.join(", ") || ''}</InfoValue>
+              <InfoValue>{eventDetails.organizers?.join(', ') || ''}</InfoValue>
             </InfoRow>
 
             <RegisterWrapper>
@@ -248,7 +259,10 @@ const EventDetailsPage = () => {
           </InfoBlock>
         </ContentBlock>
 
-        <EventImage src={eventDetails.photos?.[0] || eventDetails.image || ''} alt={eventDetails.name} />
+        <EventImage
+          src={eventDetails.photos?.[0] || eventDetails.image || ''}
+          alt={eventDetails.name}
+        />
       </Layout>
 
       <DescriptionBlock>

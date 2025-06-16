@@ -167,12 +167,12 @@ const EventsPage = () => {
   };
 
   const handleEventClick = (eventId: string) => {
-    const event = events.find(card => card.id === eventId);
-    if (!event) {
-      console.error(`Событие с id=${eventId} не найдено`);
-      return;
-    }
-    navigate(`/event/${eventId}`, { state: { eventData: event } });
+    // const event = events.find(card => card.id === eventId);
+    // if (!event) {
+    //   console.error(`Событие с id=${eventId} не найдено`);
+    //   return;
+    // }
+    navigate(`/event/${eventId}`, { state: { eventData: eventId } });
   };
 
   return (
@@ -279,12 +279,12 @@ const EventsPage = () => {
         }}>
           {events.map((card: Event) => (
             <Box 
-              key={card.id} 
-              onClick={() => handleEventClick(card.id)}
+              key={card._id} 
+              onClick={() => handleEventClick(card._id)}
               sx={{ position: 'relative', cursor: 'pointer' }}
             >
               <EventCardComponent
-                category={card.category}
+                category={card.category_id}
                 name={card.name}
                 location={card.location}
                 data={card.date}
@@ -293,16 +293,23 @@ const EventsPage = () => {
               <IconButton 
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleHeartClick(card.id);
+                  handleHeartClick(card._id);
                 }} 
                 sx={{
                   position: 'absolute',
                   top: 12,
                   right: 12,
-                  color: favorites[card.id] ? '#EA6948' : '#7F838B'
+                  color: favorites[card._id] ? '#EA6948' : '#7F838B',
+                  outline: "none",
+                  "&:focus": {
+                    outline: "none",
+                  },
+                  "&.Mui-focusVisible": {
+                    outline: "none",
+                  },
                 }}
               >
-                {favorites[card.id] ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                {favorites[card._id] ? <FavoriteIcon /> : <FavoriteBorderIcon />}
               </IconButton>
             </Box>
           ))}
