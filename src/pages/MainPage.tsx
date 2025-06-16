@@ -59,10 +59,10 @@ const MainPage = () => {
   const { userId } = useAuth();
 
   useEffect(() => {
-    if (!userId) return;
+    //if (!userId) return;
 
     api
-      .get(`/api/users/home/${userId}`) //684d865176ca9263a4bad628
+      .get(`/api/users/home/684d865176ca9263a4bad628`) //684d865176ca9263a4bad628
       .then((res) => {
         console.log("Получено с сервера:", res.data);
         setFavorite(res.data.favorite_events);

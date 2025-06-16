@@ -33,7 +33,7 @@ type Event = {
     name: string;
     location: string;
     date: string;
-    photo: string[];
+    photo: string;
   };
 
   const PersonalAccount = () => {
@@ -45,21 +45,39 @@ type Event = {
     const [surname, setSurname] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [image, setImage] = useState<string | null>(null);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
-    // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const file = event.target.files?.[0];
-    //     if (file) {
-    //       const reader = new FileReader();
-    //       reader.onload = () => {
-    //         setImage(reader.result as string);
-    //       };
-    //       reader.readAsDataURL(file);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    // const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const file = e.target.files?.[0]; // берём только один файл
+    //     if (!file ) return;
+      
+    //     const formData = new FormData();
+    //     formData.append("profile_picture", file); // добавляем только один файл
+      
+    //     try {
+    //       const res = await api.patch(`/api/user/684f3500f6324a1adb262185/profile-picture`, formData );
+      
+    //       if (res.data?.profile_picture) {
+    //         setImage(res.data.profile_picture);
+    //       }
+      
+    //       alert("Фото успешно загружено");
+    //     } catch (err) {
+    //       console.error("Ошибка загрузки фото:", err);
+    //       alert("Ошибка при загрузке фото");
     //     }
-    //   };
-    const handleGenderChange = (event: React.MouseEvent<HTMLElement>, newGender: string) => {
-    if (newGender !== null) setGender(newGender);
+    //   };     
+    
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setSelectedFile(file);
+        setImageUrl(URL.createObjectURL(file)); // для предпросмотра
+      }
     };
+    
 
     const [events, setEvents] = useState<Event[]>([]);
     const { userId } = useAuth();
@@ -67,7 +85,7 @@ type Event = {
       useEffect(() => {
         //if (!userId) return;
         api
-          .get(`/api/users/684d865176ca9263a4bad628/events`) //684d865176ca9263a4bad628
+          .get(`/api/users/684f3500f6324a1adb262185/events`) //684d865176ca9263a4bad628
           .then((res) => {
             console.log("Получено с сервера:", res.data);
             setEvents(res.data);
@@ -78,39 +96,76 @@ type Event = {
     useEffect(() => {
         //if (!userId) return;
         api
-          .get(`/api/users/${userId}`) //684d865176ca9263a4bad628
+          .get(`/api/users/684f3500f6324a1adb262185`) //684d865176ca9263a4bad628
           .then(res => {
             const data = res.data;
             setName(data.name);
+            setSurname(data.surname);
             setEmail(data.email);
-            setImage(data.profile_picture);
-            setGender(data.gender || "");
-            setBirthDate(data.birth_date ? dayjs(data.birth_date) : null);
+            setImageUrl(data.profile_picture);
+            setGender(data.sex);
+            setBirthDate(data.birthday ? dayjs(data.birthday) : null);
+            setPhone(data.phone_number);
           })
           .catch(err => console.error("Ошибка загрузки профиля:", err));
       }, [userId]);
-
-      const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-          const imageUrl = URL.createObjectURL(file);
-          setImage(imageUrl); 
-        }
-      };
       
 
-  const handleSave = () => {
-    api
-      .put(`/api/users/${userId}`, {
-      name,
-      email,
-      gender,
-      birth_date: birthDate ? birthDate.toISOString() : null,
-      profile_picture: image
-    })
-    .then(() => alert("Изменения сохранены"))
-    .catch(err => console.error("Ошибка при сохранении:", err));
+  // const handleSave = () => {
+  //   api
+  //     .patch(`/api/users/684f3500f6324a1adb262185`, {
+  //     name,
+  //     surname,
+  //     email,
+  //     sex: gender,
+  //     birthday: birthDate ? birthDate.format("YYYY-MM-DDT00:00:00") : null,
+  //     phone_number: phone
+  //   })
+  //   .then(() => alert("Изменения сохранены"))
+  //   .catch(err => console.error("Ошибка при сохранении:", err));
+  // };
+  const handleSave = async () => {
+    let uploadedImageUrl = imageUrl;
+  
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("profile_picture", selectedFile);
+  
+      try {
+        const res = await api.patch(`/api/users/${userId}/profile-picture`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
+        uploadedImageUrl = res.data?.profile_picture; // ссылка от сервера
+        if (!uploadedImageUrl) throw new Error("Сервер не вернул ссылку на фото");
+  
+      } catch (error) {
+        console.error("Ошибка загрузки фото:", error);
+        alert("Не удалось загрузить фото");
+        return;
+      }
+    }
+  
+    try {
+      await api.patch(`/api/users/${userId}`, {
+        name,
+        surname,
+        email,
+        sex: gender,
+        birthday: birthDate ? birthDate.format("YYYY-MM-DDT00:00:00") : null,
+        phone_number: phone,
+        profile_picture: uploadedImageUrl
+      });
+  
+      alert("Изменения сохранены");
+    } catch (err) {
+      console.error("Ошибка при сохранении:", err);
+      alert("Ошибка при сохранении данных");
+    }
   };
+  
 
     const StyledButton = styled(Button)(({ theme }) =>({
         background: theme.palette.orange.main,
@@ -175,7 +230,7 @@ type Event = {
                         width: 160, 
                         height: 160,}}>
                         <Avatar
-                            src={image || ""}
+                            src={imageUrl || ""}
                             sx={{
                             width: 160,
                             height: 160,
@@ -254,9 +309,9 @@ type Event = {
                         label="Пол"
                         onChange={(e) => setGender(e.target.value)}
                         >
-                        <MenuItem value={"male"}>Мужской</MenuItem>
-                        <MenuItem value={"female"}>Женский</MenuItem>
-                        <MenuItem value={"unknown"}>Не указано</MenuItem>
+                        <MenuItem value={"Мужской"}>Мужской</MenuItem>
+                        <MenuItem value={"Женский"}>Женский</MenuItem>
+                        <MenuItem value={"Не указано"}>Не указано</MenuItem>
                         </Select>
                     </FormControl>
                     
@@ -268,7 +323,7 @@ type Event = {
                             slotProps={{
                             textField: {
                                 fullWidth: true,
-                                variant: "outlined",
+                                variant: "outlined",                                
                                 sx: {
                                 paddingBottom: theme.spacing(6),
                                 "& .MuiOutlinedInput-root": {
@@ -335,13 +390,13 @@ type Event = {
                 <AccordionDetails>
                 <Grid container spacing ={7} sx={{width: "100%"}}>
                     {events.map((card: Event) => (
-                            <Grid size={{xs: 4}}>
+                            <Grid size={{xs: 4}} key={card._id}>
                             <EventCard2
                                 _id = {card._id}
                                 name={card.name}
                                 location={card.location}
                                 data={card.date}
-                                imageUrl={card.photo?.[0] || ""}
+                                imageUrl={card.photo}
                                 category={card.category_id}
                     />
                             </Grid>
