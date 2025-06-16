@@ -83,9 +83,9 @@ type Event = {
     const { userId } = useAuth();
     
       useEffect(() => {
-        //if (!userId) return;
+        if (!userId) return;
         api
-          .get(`/api/users/684f3500f6324a1adb262185/events`) //684d865176ca9263a4bad628
+          .get(`/api/users/${userId}/events`) 
           .then((res) => {
             console.log("Получено с сервера:", res.data);
             setEvents(res.data);
@@ -94,9 +94,9 @@ type Event = {
       }, [userId]);
       
     useEffect(() => {
-        //if (!userId) return;
+        if (!userId) return;
         api
-          .get(`/api/users/684f3500f6324a1adb262185`) //684d865176ca9263a4bad628
+          .get(`/api/users/${userId}`) 
           .then(res => {
             const data = res.data;
             setName(data.name);
@@ -156,7 +156,7 @@ type Event = {
         sex: gender,
         birthday: birthDate ? birthDate.format("YYYY-MM-DDT00:00:00") : null,
         phone_number: phone,
-        profile_picture: uploadedImageUrl
+        profile_picture: uploadedImageUrl 
       });
   
       alert("Изменения сохранены");

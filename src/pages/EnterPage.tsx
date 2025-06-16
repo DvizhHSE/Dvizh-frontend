@@ -12,6 +12,8 @@ import { styled } from "@mui/system";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import api from "../api/axios";
 
 const Background = styled(Box)({
   minHeight: "100vh",
@@ -76,22 +78,45 @@ const SubmitButton = styled(Button)({
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const { setUserId } = useAuth(); 
+  const navigate = useNavigate();
 
+  const handleLogin = async () => {
+    try {
+      const res = await api.post('api/users/login', null, {
+        params: { email, password }
+      });
+  
+      // В Axios успешный ответ приходит в res.data
+      const data = res.data;
+  
+      setUserId(data._id);  // обновляем контекст
+      navigate("/home");
+    } catch (err) {
+      console.error("Ошибка при входе:", err);
+      alert("Неверный email или пароль");
+    }
+  };
+  
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
   
-        const navigate = useNavigate();
 
   return (
     <Background>
       <LoginContainer>
         <Title>Вход</Title>
-        <StyledTextField label="Email" variant="outlined" />
+        <StyledTextField label="Email" variant="outlined" value={email}
+        onChange={(e) => setEmail(e.target.value)} />
         <StyledTextField
           label="Пароль"
           variant="outlined"
           type={showPassword ? "text" : "password"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -107,7 +132,7 @@ const LoginPage = () => {
             Забыли пароль?
           </Link>
         </Box>
-        <SubmitButton>Войти</SubmitButton>
+        <SubmitButton onClick={handleLogin}>Войти</SubmitButton>
         <Typography fontSize="14px" color="#6B7280">
           У вас еще нет аккаунта?{" "}
           <Link href="/registration" underline="hover" fontWeight="500">
