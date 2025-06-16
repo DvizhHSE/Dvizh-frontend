@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, IconButton } from '@mui/material';
 import { styled } from '@mui/system';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import api from '../api/axios';
 
 const Container = styled(Box)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -149,7 +150,7 @@ const HeartButton = styled(IconButton)({
 const DescriptionBlock = styled(Box)({
   width: '1216px',
   backgroundColor: '#F4F7FC',
-  padding: '20px 20px 20px 20px',
+  padding: '20px',
   boxSizing: 'border-box',
   borderRadius: '10px',
   marginTop: '24px',
@@ -179,49 +180,67 @@ const Description = styled(Typography)({
 const EventDetailsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { eventData } = location.state || {};
+  const eventData = location.state?.eventData;
   const [liked, setLiked] = useState(false);
+  const [eventDetails, setEventDetails] = useState<any>(null);
 
-  if (!eventData) {
-    return <div>Event not found</div>;
+  useEffect(() => {
+    if (!eventData) return;
+
+
+    api
+      .get(`/api/events/${eventData}`)
+      .then((res) => {
+        setEventDetails(res.data);
+      })
+      .catch((err) => console.error('Ошибка загрузки события:', err));
+  }, [eventData]);
+
+  if (!eventDetails) {
+    return <div>Загрузка...</div>;
   }
 
   return (
     <Container>
       <BackWrapper onClick={() => navigate(-1)}>
         <OrangeBackIcon />
-        <BackText>Мероприятия / {eventData.name}</BackText>
+        <BackText>Мероприятия / {eventDetails.name}</BackText>
       </BackWrapper>
 
       <Layout>
         <ContentBlock>
-          <Category>{eventData.category}</Category>
-          <Title>{eventData.name}</Title>
+          <Category>{eventDetails.category_id}</Category>
+          <Title>{eventDetails.name}</Title>
 
           <InfoBlock>
             <InfoRow>
               <InfoLabel>Место:</InfoLabel>
-              <InfoValue>{eventData.location}</InfoValue>
+              <InfoValue>{eventDetails.location}</InfoValue>
             </InfoRow>
             <InfoRow>
               <InfoLabel>Дата:</InfoLabel>
-              <InfoValue>{eventData.date}</InfoValue>
+              <InfoValue>{new Date(eventDetails.date).toLocaleDateString()}</InfoValue>
             </InfoRow>
             <InfoRow>
               <InfoLabel>Время:</InfoLabel>
-              <InfoValue>{eventData.time}</InfoValue>
+              <InfoValue>
+                {new Date(eventDetails.date).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </InfoValue>
             </InfoRow>
             <InfoRow>
-              <InfoLabel>Возраст:</InfoLabel>
-              <InfoValue>{eventData.ageRestriction}</InfoValue>
+              <InfoLabel>Возрастное ограничение:</InfoLabel>
+              <InfoValue>{eventDetails.age_limit || 'Нет'}</InfoValue>
             </InfoRow>
             <InfoRow>
               <InfoLabel>Для кого:</InfoLabel>
-              <InfoValue>{eventData.targetAudience}</InfoValue>
+              <InfoValue>{eventDetails.for_roles?.join(', ') || 'Все'}</InfoValue>
             </InfoRow>
             <InfoRow>
-              <InfoLabel>Организатор:</InfoLabel>
-              <InfoValue>{eventData.organizer}</InfoValue>
+              <InfoLabel>Организаторы:</InfoLabel>
+              <InfoValue>{eventDetails.organizers?.join(', ') || ''}</InfoValue>
             </InfoRow>
 
             <RegisterWrapper>
@@ -240,12 +259,15 @@ const EventDetailsPage = () => {
           </InfoBlock>
         </ContentBlock>
 
-        <EventImage src={eventData.image} alt={eventData.name} />
+        <EventImage
+          src={eventDetails.photos?.[0] || eventDetails.image || ''}
+          alt={eventDetails.name}
+        />
       </Layout>
 
       <DescriptionBlock>
         <DescriptionTitle>Описание</DescriptionTitle>
-        <Description>{eventData.description}</Description>
+        <Description>{eventDetails.description || 'Описание отсутствует'}</Description>
       </DescriptionBlock>
     </Container>
   );
