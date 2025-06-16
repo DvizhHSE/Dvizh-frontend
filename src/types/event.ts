@@ -1,6 +1,6 @@
 export interface Event {
-  id: number;
-  image: string;
+  id: string;
+  image: string[];
   category: string;
   name: string;
   location: string;
@@ -8,7 +8,7 @@ export interface Event {
   time: string;
   ageRestriction: string;
   targetAudience: string;
-  organizer: string;
+  organizer: string[];
   description: string;
 }
 

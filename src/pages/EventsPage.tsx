@@ -18,6 +18,9 @@ import { DateRange } from '@mui/x-date-pickers-pro';
 import EventCardComponent from '../components/EventCard2';
 import eventsData from '../data/events.json';
 import { Event } from '../types/event';
+import api from "../api/axios";
+import { useEffect, useState } from "react";
+import { useAuth } from '../context/AuthContext';
 
 const EventsContainer = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
@@ -137,234 +140,23 @@ const ButtonsContainer = styled(Box)(({ theme }) => ({
   gap: '24px'
 }));
 
-const EventImage = styled('img')({
-  width: '384px',
-  height: '300px',
-  borderRadius: '21px',
-  boxShadow: '4px 4px 20px rgba(0, 0, 0, 0.25)',
-  objectFit: 'cover'
-});
-
-const EventCard = styled(Box)(({ theme }) => ({
-  width: '384px',
-  height: '410px',
-  marginTop: '40px',
-  background: 'transparent',
-  borderRadius: '10px',
-  position: 'relative',
-  cursor: 'pointer',
-  '&:hover': {
-    opacity: 0.9
-  }
-}));
-
-const HeartButton = styled(IconButton)({
-  position: 'absolute',
-  width: '50px',
-  height: '50px',
-  right: '20px',
-  top: '20px',
-  padding: 0,
-  zIndex: 1,
-  '&:hover': {
-    background: 'transparent'
-  },
-  '&:focus': {
-    outline: 'none'
-  },
-  '& .MuiTouchRipple-root': {
-    display: 'none'
-  }
-});
-
-const CategoryText = styled(Typography)({
-  position: 'absolute',
-  width: '384px',
-  height: '20px',
-  left: '0',
-  top: '320px',
-  fontFamily: 'Montserrat',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '20px',
-  display: 'flex',
-  alignItems: 'center',
-  letterSpacing: '0.2px',
-  textTransform: 'uppercase',
-  color: '#AAACB2',
-  padding: '0'
-});
-
-const EventTitle = styled(Typography)({
-  position: 'absolute',
-  width: 'auto',
-  minWidth: '166px',
-  maxWidth: '344px',
-  height: '30px',
-  left: '0',
-  top: '350px',
-  fontFamily: 'Montserrat',
-  fontStyle: 'normal',
-  fontWeight: 600,
-  fontSize: '20px',
-  lineHeight: '30px',
-  display: 'flex',
-  alignItems: 'center',
-  letterSpacing: '0.2px',
-  color: '#2A303E',
-  padding: '0'
-});
-
-const LocationIcon = styled(LocationOnIcon)({
-  width: '20px',
-  height: '20.3px',
-  flex: 'none',
-  order: 0,
-  flexGrow: 0,
-  color: '#EF8E76',
-  '& path': {
-    fill: 'none',
-    stroke: '#EF8E76',
-    strokeWidth: 1.5
-  }
-});
-
-const LocationText = styled(Typography)({
-  width: '47px',
-  height: '20px',
-  fontFamily: 'Montserrat',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '20px',
-  display: 'flex',
-  alignItems: 'center',
-  letterSpacing: '0.2px',
-  color: '#7F838B',
-  flex: 'none',
-  order: 1,
-  flexGrow: 0
-});
-
-const Frame = styled(Box)({
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  padding: '0px',
-  gap: '5px',
-  position: 'absolute',
-  width: '72px',
-  height: '20.3px',
-  left: '0',
-  top: '390px'
-});
-
-const CalendarIcon = styled(CalendarTodayIcon)({
-  width: '20px',
-  height: '20px',
-  flex: 'none',
-  order: 0,
-  flexGrow: 0,
-  color: '#EF8E76',
-  '& path': {
-    fill: 'none',
-    stroke: '#EF8E76',
-    strokeWidth: 1.5
-  }
-});
-
-const DateText = styled(Typography)({
-  width: '102px',
-  height: '20px',
-  fontFamily: 'Montserrat',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '20px',
-  display: 'flex',
-  alignItems: 'center',
-  letterSpacing: '0.2px',
-  color: '#7F838B',
-  flex: 'none',
-  order: 1,
-  flexGrow: 0
-});
-
-const DateFrame = styled(Box)({
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  padding: '0px',
-  gap: '5px',
-  position: 'absolute',
-  width: '127px',
-  height: '20.3px',
-  left: '0',
-  top: '420px'
-});
-
-const AgeFrame = styled(Box)({
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  padding: '0px',
-  gap: '5px',
-  position: 'absolute',
-  width: '127px',
-  height: '20.3px',
-  left: '0',
-  top: '450px'
-});
-
-const AudienceFrame = styled(Box)({
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  padding: '0px',
-  gap: '5px',
-  position: 'absolute',
-  width: '127px',
-  height: '20.3px',
-  left: '0',
-  top: '480px'
-});
-
-const OrganizerFrame = styled(Box)({
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  padding: '0px',
-  gap: '5px',
-  position: 'absolute',
-  width: '127px',
-  height: '20.3px',
-  left: '0',
-  top: '510px'
-});
-
-const InfoText = styled(Typography)({
-  width: '120px',
-  height: '20px',
-  fontFamily: 'Montserrat',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  fontSize: '14px',
-  lineHeight: '20px',
-  display: 'flex',
-  alignItems: 'center',
-  letterSpacing: '0.2px',
-  color: '#7F838B',
-  flex: 'none',
-  order: 1,
-  flexGrow: 0
-});
-
 const EventsPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [dateRange, setDateRange] = React.useState<DateRange<Date>>([null, null]);
   const [favorites, setFavorites] = React.useState<Record<number, boolean>>({});
+  const [events, setEvents] = useState<Event[]>([]);
+  const { userId } = useAuth();
+
+  useEffect(() => {
+    api
+      .get(`/api/events/`) 
+      .then((res) => {
+        console.log("Получено с сервера:", res.data);
+        setEvents(res.data);
+      })
+      .catch((err) => console.error("Ошибка загрузки данных:", err));
+  }, [userId]);
 
   const handleHeartClick = (eventId: number) => {
     setFavorites((prev: Record<number, boolean>) => ({
@@ -373,8 +165,8 @@ const EventsPage = () => {
     }));
   };
 
-  const handleEventClick = (eventId: number) => {
-    const event = eventsData.events.find(card => card.id === eventId);
+  const handleEventClick = (eventId: string) => {
+    const event = events.find(card => card.id === eventId);
     navigate(`/event/${eventId}`, { state: { eventData: event } });
   };
 
@@ -480,7 +272,7 @@ const EventsPage = () => {
           gap: '24px',
           marginTop: '40px'
         }}>
-          {eventsData.events.map((card: Event) => (
+          {events.map((card: Event) => (
             <Box 
               key={card.id} 
               onClick={() => handleEventClick(card.id)}
@@ -491,7 +283,7 @@ const EventsPage = () => {
                 name={card.name}
                 location={card.location}
                 data={card.date}
-                imageUrl={card.image}
+                imageUrl={card.image?.[0] || ""}
               />
               <IconButton 
                 onClick={(e) => {

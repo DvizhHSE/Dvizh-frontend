@@ -5,6 +5,9 @@ import { styled } from '@mui/system';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { useEffect } from "react";
+import api from "../api/axios";
+import { useAuth } from '../context/AuthContext';
 
 const Container = styled(Box)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -181,6 +184,18 @@ const EventDetailsPage = () => {
   const navigate = useNavigate();
   const { eventData } = location.state || {};
   const [liked, setLiked] = useState(false);
+  const [name, setName] = useState("");
+  const { userId } = useAuth();
+
+  useEffect(() => {
+        api
+          .get(`/api/users/${userId}`) //684d865176ca9263a4bad628
+          .then(res => {
+            const data = res.data;
+            setName(data.name);
+          })
+          .catch(err => console.error("Ошибка загрузки профиля:", err));
+      }, [userId]);
 
   if (!eventData) {
     return <div>Event not found</div>;
@@ -221,7 +236,7 @@ const EventDetailsPage = () => {
             </InfoRow>
             <InfoRow>
               <InfoLabel>Организатор:</InfoLabel>
-              <InfoValue>{eventData.organizer}</InfoValue>
+              <InfoValue>{eventData.organizer?.[0] || ""}</InfoValue>
             </InfoRow>
 
             <RegisterWrapper>
