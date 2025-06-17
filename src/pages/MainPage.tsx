@@ -148,7 +148,7 @@ const MainPage = () => {
                       name={card.name}
                       location={card.location}
                       date={card.date}
-                      imageUrl={card.photos[0]}
+                      imageUrl={card.photos?.[0] || ""}
                       category={card.category_id}
                     />
                 </SwiperSlide>
