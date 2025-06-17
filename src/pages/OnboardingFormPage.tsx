@@ -12,6 +12,8 @@ import { styled } from "@mui/system";
 import { AnimatePresence, motion } from "framer-motion";
 import api from "../api/axios";
 import { useRegistration } from "../RegistrationContext";
+import { useNavigate } from "react-router-dom";  // <-- добавлено
+
 
 const Background = styled(Box)({
   height: "100vh",
@@ -94,6 +96,8 @@ const stepVariants = {
 const OnboardingForm: React.FC = () => {
   const { data, setData } = useRegistration();
   const [step, setStep] = React.useState(0);
+    const navigate = useNavigate();  // <-- добавлено
+
 
   // Локальный стейт синхронизируем с контекстом
   const [localData, setLocalData] = React.useState({
@@ -150,6 +154,8 @@ const OnboardingForm: React.FC = () => {
       await api.post("/api/users/register", payload);
 
       alert("Регистрация прошла успешно!");
+            navigate("/enter");  // <-- добавлен переход после успешной регистрации
+
     } catch (error) {
       console.error("Ошибка при регистрации:", error);
         console.log("Детали от сервера:", error.response?.data); // <- добавь это
