@@ -11,7 +11,9 @@ import {
 import { styled } from "@mui/system";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";  // Путь к твоему AuthContext
+import api from "../api/axios";                     // Путь к твоему axios-инстансу
 
 const Background = styled(Box)({
   minHeight: "100vh",
@@ -74,23 +76,57 @@ const SubmitButton = styled(Button)({
 });
 
 const LoginPage = () => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
+
+  const navigate = useNavigate();
+  const { setUserId } = useAuth();
 
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
-  
-        const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await api.post(
+        `/users/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+        {}
+      );
+
+      console.log("Успех", response.data);
+
+      // Сохраняем userId в контекст и localStorage
+      setUserId(response.data._id);
+
+      // Можно, например, сохранить и другие данные, если нужно
+      // Например: setUserData(response.data);
+
+      // Перенаправляем на главную или другую страницу
+      navigate("/");
+    } catch (err) {
+      console.error("Ошибка", err);
+      // Здесь можно показывать сообщение об ошибке пользователю
+    }
+  };
 
   return (
     <Background>
       <LoginContainer>
         <Title>Вход</Title>
-        <StyledTextField label="Email" variant="outlined" />
+        <StyledTextField
+          label="Email"
+          variant="outlined"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
         <StyledTextField
           label="Пароль"
           variant="outlined"
           type={showPassword ? "text" : "password"}
+          value={password}
+          onChange={e => setPassword(e.target.value)}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -98,7 +134,7 @@ const LoginPage = () => {
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
-            )
+            ),
           }}
         />
         <Box width="100%" textAlign="right">
@@ -106,7 +142,7 @@ const LoginPage = () => {
             Забыли пароль?
           </Link>
         </Box>
-        <SubmitButton>Войти</SubmitButton>
+        <SubmitButton onClick={handleSubmit}>Войти</SubmitButton>
         <Typography fontSize="14px" color="#6B7280">
           У вас еще нет аккаунта?{" "}
           <Link href="/registration" underline="hover" fontWeight="500">
