@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/system';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 
 const Container = styled(Box)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -180,13 +181,16 @@ const Description = styled(Typography)({
 const EventDetailsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { userId } = useAuth();
   const eventData = location.state?.eventData;
   const [liked, setLiked] = useState(false);
   const [eventDetails, setEventDetails] = useState<any>(null);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     if (!eventData) return;
-
 
     api
       .get(`/api/events/${eventData}`)
@@ -194,7 +198,39 @@ const EventDetailsPage = () => {
         setEventDetails(res.data);
       })
       .catch((err) => console.error('Ошибка загрузки события:', err));
-  }, [eventData]);
+
+    if (userId) {
+      api
+        .get(`/api/users/${userId}/events`)
+        .then((res) => {
+          const userEvents = res.data;
+          const isUserRegistered = userEvents.some((event: any) => event._id === eventData);
+          setIsRegistered(isUserRegistered);
+        })
+        .catch((err) => console.error('Ошибка проверки регистрации:', err));
+    }
+  }, [eventData, userId]);
+
+  const handleRegister = async () => {
+    if (!userId || !eventData) return;
+
+    try {
+      await api.post(`/api/users/${eventData}/register/${userId}`);
+      setIsRegistered(true);
+      setShowSuccess(true);
+    } catch (error) {
+      console.error('Ошибка при регистрации:', error);
+      setShowError(true);
+    }
+  };
+
+  const handleCloseSuccess = () => {
+    setShowSuccess(false);
+  };
+
+  const handleCloseError = () => {
+    setShowError(false);
+  };
 
   if (!eventDetails) {
     return <div>Загрузка...</div>;
@@ -244,8 +280,10 @@ const EventDetailsPage = () => {
             </InfoRow>
 
             <RegisterWrapper>
-              <RegisterButton>
-                <RegisterButtonText>Записаться</RegisterButtonText>
+              <RegisterButton onClick={handleRegister} sx={{ opacity: isRegistered ? 0.5 : 1 }}>
+                <RegisterButtonText>
+                  {isRegistered ? 'Вы записаны' : 'Записаться'}
+                </RegisterButtonText>
               </RegisterButton>
 
               <HeartButton onClick={() => setLiked(!liked)} aria-label="like">
@@ -269,6 +307,28 @@ const EventDetailsPage = () => {
         <DescriptionTitle>Описание</DescriptionTitle>
         <Description>{eventDetails.description || 'Описание отсутствует'}</Description>
       </DescriptionBlock>
+
+      <Snackbar 
+        open={showSuccess} 
+        autoHideDuration={3000} 
+        onClose={handleCloseSuccess}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
+          Вы успешно записались на мероприятие!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar 
+        open={showError} 
+        autoHideDuration={3000} 
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+          Ошибка при регистрации на мероприятие
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
