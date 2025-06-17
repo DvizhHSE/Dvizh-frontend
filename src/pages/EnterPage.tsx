@@ -77,6 +77,8 @@ const SubmitButton = styled(Button)({
 });
 
 const LoginPage = () => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -124,7 +126,7 @@ const LoginPage = () => {
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
-            )
+            ),
           }}
         />
         <Box width="100%" textAlign="right">
