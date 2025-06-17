@@ -141,10 +141,7 @@ const EventsPage = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [dateRange, setDateRange] = React.useState<DateRange<Date>>([null, null]);
-  
-  // Изменено: ключи favorites — строки (id событий)
   const [favorites, setFavorites] = React.useState<Record<string, boolean>>({});
-  
   const [events, setEvents] = useState<Event[]>([]);
   const { userId } = useAuth();
 
@@ -156,22 +153,39 @@ const EventsPage = () => {
         setEvents(res.data);
       })
       .catch((err) => console.error("Ошибка загрузки данных:", err));
+
+    // Загружаем избранные мероприятия пользователя
+    if (userId) {
+      api
+        .get(`/api/users/${userId}/favorites`)
+        .then((res) => {
+          const favoriteEvents = res.data;
+          const favoritesMap = favoriteEvents.reduce((acc: Record<string, boolean>, event: any) => {
+            acc[event._id] = true;
+            return acc;
+          }, {});
+          setFavorites(favoritesMap);
+        })
+        .catch((err) => console.error("Ошибка загрузки избранного:", err));
+    }
   }, [userId]);
 
-  // eventId — строка
-  const handleHeartClick = (eventId: string) => {
-    setFavorites((prev: Record<string, boolean>) => ({
-      ...prev,
-      [eventId]: !prev[eventId]
-    }));
+  const handleHeartClick = async (eventId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Предотвращаем переход на страницу события
+    if (!userId) return;
+
+    try {
+      await api.post(`/api/users/${userId}/favorites/${eventId}`);
+      setFavorites((prev: Record<string, boolean>) => ({
+        ...prev,
+        [eventId]: !prev[eventId]
+      }));
+    } catch (error) {
+      console.error("Ошибка при добавлении в избранное:", error);
+    }
   };
 
   const handleEventClick = (eventId: string) => {
-    // const event = events.find(card => card.id === eventId);
-    // if (!event) {
-    //   console.error(`Событие с id=${eventId} не найдено`);
-    //   return;
-    // }
     navigate(`/event/${eventId}`, { state: { eventData: eventId } });
   };
 
@@ -293,7 +307,7 @@ const EventsPage = () => {
               <IconButton 
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleHeartClick(card._id);
+                  handleHeartClick(card._id, e);
                 }} 
                 sx={{
                   position: 'absolute',
