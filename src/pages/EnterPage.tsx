@@ -11,12 +11,15 @@ import {
 import { styled } from "@mui/system";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";  // Путь к твоему AuthContext
-import api from "../api/axios";                     // Путь к твоему axios-инстансу
+
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import api from "../api/axios";
+
 
 const Background = styled(Box)({
   minHeight: "100vh",
+  width: "99vw",
   backgroundColor: "#FFFFFF",
   display: "flex",
   alignItems: "center",
@@ -79,54 +82,51 @@ const LoginPage = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
-
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const { setUserId } = useAuth(); 
   const navigate = useNavigate();
-  const { setUserId } = useAuth();
 
+
+  const handleLogin = async () => {
+    try {
+      const res = await api.post('api/users/login', null, {
+        params: { email, password }
+      });
+  
+      // В Axios успешный ответ приходит в res.data
+      const data = res.data;
+  
+      setUserId(data._id);  // обновляем контекст
+      navigate("/home");
+    } catch (err) {
+      console.error("Ошибка при входе:", err);
+      alert("Неверный email или пароль");
+    }
+  };
+  
   const handleTogglePassword = () => {
     setShowPassword(!showPassword);
   };
+  
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await api.post(
-        `/users/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-        {}
-      );
-
-      console.log("Успех", response.data);
-
-      // Сохраняем userId в контекст и localStorage
-      setUserId(response.data._id);
-
-      // Можно, например, сохранить и другие данные, если нужно
-      // Например: setUserData(response.data);
-
-      // Перенаправляем на главную или другую страницу
-      navigate("/");
-    } catch (err) {
-      console.error("Ошибка", err);
-      // Здесь можно показывать сообщение об ошибке пользователю
-    }
-  };
 
   return (
     <Background>
       <LoginContainer>
         <Title>Вход</Title>
-        <StyledTextField
-          label="Email"
-          variant="outlined"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
+
+        <StyledTextField label="Email" variant="outlined" value={email}
+        onChange={(e) => setEmail(e.target.value)} />
+
         <StyledTextField
           label="Пароль"
           variant="outlined"
           type={showPassword ? "text" : "password"}
           value={password}
-          onChange={e => setPassword(e.target.value)}
+
+          onChange={(e) => setPassword(e.target.value)}
+
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -142,7 +142,11 @@ const LoginPage = () => {
             Забыли пароль?
           </Link>
         </Box>
-        <SubmitButton onClick={handleSubmit}>Войти</SubmitButton>
+
+
+
+        <SubmitButton onClick={handleLogin}>Войти</SubmitButton>
+
         <Typography fontSize="14px" color="#6B7280">
           У вас еще нет аккаунта?{" "}
           <Link href="/registration" underline="hover" fontWeight="500">

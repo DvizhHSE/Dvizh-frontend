@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton, Snackbar, Alert } from '@mui/material';
 import { styled } from '@mui/system';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 
 const Container = styled(Box)(({ theme }) => ({
   background: theme.palette.background.default,
@@ -149,7 +151,7 @@ const HeartButton = styled(IconButton)({
 const DescriptionBlock = styled(Box)({
   width: '1216px',
   backgroundColor: '#F4F7FC',
-  padding: '20px 20px 20px 20px',
+  padding: '20px',
   boxSizing: 'border-box',
   borderRadius: '10px',
   marginTop: '24px',
@@ -179,57 +181,132 @@ const Description = styled(Typography)({
 const EventDetailsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { eventData } = location.state || {};
+  const { userId } = useAuth();
+  const eventData = location.state?.eventData;
   const [liked, setLiked] = useState(false);
+  const [eventDetails, setEventDetails] = useState<any>(null);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
 
-  if (!eventData) {
-    return <div>Event not found</div>;
+  useEffect(() => {
+    if (!eventData) return;
+
+    api
+      .get(`/api/events/${eventData}`)
+      .then((res) => {
+        setEventDetails(res.data);
+      })
+      .catch((err) => console.error('Ошибка загрузки события:', err));
+
+    if (userId) {
+      api
+        .get(`/api/users/${userId}/events`)
+        .then((res) => {
+          const userEvents = res.data;
+          const isUserRegistered = userEvents.some((event: any) => event._id === eventData);
+          setIsRegistered(isUserRegistered);
+        })
+        .catch((err) => console.error('Ошибка проверки регистрации:', err));
+
+      api
+        .get(`/api/users/${userId}/favorites`)
+        .then((res) => {
+          const favoriteEvents = res.data;
+          const isEventFavorite = favoriteEvents.some((event: any) => event._id === eventData);
+          setLiked(isEventFavorite);
+        })
+        .catch((err) => console.error('Ошибка проверки избранного:', err));
+    }
+  }, [eventData, userId]);
+
+  const handleRegister = async () => {
+    if (!userId || !eventData) return;
+
+    try {
+      await api.post(`/api/users/${eventData}/register/${userId}`);
+      setIsRegistered(true);
+      setShowSuccess(true);
+    } catch (error) {
+      console.error('Ошибка при регистрации:', error);
+      setShowError(true);
+    }
+  };
+
+  const handleFavoriteClick = async () => {
+    if (!userId || !eventData) return;
+
+    try {
+      await api.post(`/api/users/${userId}/favorites/${eventData}`);
+      setLiked(!liked);
+    } catch (error) {
+      console.error('Ошибка при добавлении в избранное:', error);
+    }
+  };
+
+  const handleCloseSuccess = () => {
+    setShowSuccess(false);
+  };
+
+  const handleCloseError = () => {
+    setShowError(false);
+  };
+
+  if (!eventDetails) {
+    return <div>Загрузка...</div>;
   }
 
   return (
     <Container>
       <BackWrapper onClick={() => navigate(-1)}>
         <OrangeBackIcon />
-        <BackText>Мероприятия / {eventData.name}</BackText>
+        <BackText>Мероприятия / {eventDetails.name}</BackText>
       </BackWrapper>
 
       <Layout>
         <ContentBlock>
-          <Category>{eventData.category}</Category>
-          <Title>{eventData.name}</Title>
+          <Category>{eventDetails.category_id}</Category>
+          <Title>{eventDetails.name}</Title>
 
           <InfoBlock>
             <InfoRow>
               <InfoLabel>Место:</InfoLabel>
-              <InfoValue>{eventData.location}</InfoValue>
+              <InfoValue>{eventDetails.location}</InfoValue>
             </InfoRow>
             <InfoRow>
               <InfoLabel>Дата:</InfoLabel>
-              <InfoValue>{eventData.date}</InfoValue>
+              <InfoValue>{new Date(eventDetails.date).toLocaleDateString()}</InfoValue>
             </InfoRow>
             <InfoRow>
               <InfoLabel>Время:</InfoLabel>
-              <InfoValue>{eventData.time}</InfoValue>
+              <InfoValue>
+                {new Date(eventDetails.date).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </InfoValue>
             </InfoRow>
             <InfoRow>
-              <InfoLabel>Возраст:</InfoLabel>
-              <InfoValue>{eventData.ageRestriction}</InfoValue>
+              <InfoLabel>Возрастное ограничение:</InfoLabel>
+              <InfoValue>{eventDetails.age_limit || 'Нет'}</InfoValue>
             </InfoRow>
             <InfoRow>
               <InfoLabel>Для кого:</InfoLabel>
-              <InfoValue>{eventData.targetAudience}</InfoValue>
+              <InfoValue>{eventDetails.for_roles?.join(', ') || 'Все'}</InfoValue>
             </InfoRow>
             <InfoRow>
-              <InfoLabel>Организатор:</InfoLabel>
-              <InfoValue>{eventData.organizer}</InfoValue>
+              <InfoLabel>Организаторы:</InfoLabel>
+              <InfoValue>{eventDetails.organizers || ''}</InfoValue>
             </InfoRow>
 
             <RegisterWrapper>
-              <RegisterButton>
-                <RegisterButtonText>Записаться</RegisterButtonText>
+              <RegisterButton onClick={handleRegister} sx={{ opacity: isRegistered ? 0.5 : 1 }}>
+                <RegisterButtonText>
+                  {isRegistered ? 'Вы записаны' : 'Записаться'}
+                </RegisterButtonText>
               </RegisterButton>
 
-              <HeartButton onClick={() => setLiked(!liked)} aria-label="like">
+              <HeartButton onClick={handleFavoriteClick} aria-label="like">
                 {liked ? (
                   <FavoriteIcon style={{ color: '#F16645', fontSize: 48 }} />
                 ) : (
@@ -240,13 +317,38 @@ const EventDetailsPage = () => {
           </InfoBlock>
         </ContentBlock>
 
-        <EventImage src={eventData.image} alt={eventData.name} />
+        <EventImage
+          src={eventDetails.photos?.[0] || eventDetails.image || ''}
+          alt={eventDetails.name}
+        />
       </Layout>
 
       <DescriptionBlock>
         <DescriptionTitle>Описание</DescriptionTitle>
-        <Description>{eventData.description}</Description>
+        <Description>{eventDetails.description || 'Описание отсутствует'}</Description>
       </DescriptionBlock>
+
+      <Snackbar 
+        open={showSuccess} 
+        autoHideDuration={3000} 
+        onClose={handleCloseSuccess}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSuccess} severity="success" sx={{ width: '100%' }}>
+          Вы успешно записались на мероприятие!
+        </Alert>
+      </Snackbar>
+
+      <Snackbar 
+        open={showError} 
+        autoHideDuration={3000} 
+        onClose={handleCloseError}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseError} severity="error" sx={{ width: '100%' }}>
+          Ошибка при регистрации на мероприятие
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

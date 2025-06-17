@@ -5,6 +5,7 @@ import { useTheme } from "@mui/material/styles"
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 interface CardProps {
+    _id: string;
     category: string;
     name: string;
     location: string;
@@ -68,6 +69,7 @@ interface CardProps {
   }));
 
 const EventCard: React.FC<CardProps> = ({ 
+    _id,
     category,
     name,
     location,
