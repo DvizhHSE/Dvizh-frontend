@@ -147,7 +147,7 @@ const OnboardingForm: React.FC = () => {
       console.log("📦 Отправляем в API:", payload); // ← ← ← ВОТ ЭТА СТРОКА
 
     try {
-      await api.post("/users/register", payload);
+      await api.post("/api/users/register", payload);
 
       alert("Регистрация прошла успешно!");
     } catch (error) {
