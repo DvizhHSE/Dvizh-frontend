@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {
   Box,
   Typography,
@@ -10,8 +10,9 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { AnimatePresence, motion } from "framer-motion";
+import api from "../api/axios";
+import { useRegistration } from "../RegistrationContext";
 
-// Стили
 const Background = styled(Box)({
   height: "100vh",
   width: "100vw",
@@ -84,37 +85,77 @@ const Dot = styled("div")<{ active?: boolean }>(({ active }) => ({
   backgroundColor: active ? "#EA6948" : "#D9D9D9"
 }));
 
-// Анимации
 const stepVariants = {
   initial: { opacity: 0, x: 50 },
   animate: { opacity: 1, x: 0 },
   exit: { opacity: 0, x: -50 }
 };
 
-// Компонент
 const OnboardingForm: React.FC = () => {
+  const { data, setData } = useRegistration();
   const [step, setStep] = React.useState(0);
-  const [formData, setFormData] = React.useState({
-    firstName: "",
-    lastName: "",
-    birthDate: "",
-    gender: "",
-    roles: [] as string[]
+
+  // Локальный стейт синхронизируем с контекстом
+  const [localData, setLocalData] = React.useState({
+    firstName: data.firstName || "",
+    lastName: data.lastName || "",
+    birthDate: data.birthDate || "",
+    gender: data.gender || "",
+    roles: data.roles || []
   });
 
-  const handleNext = () => setStep((prev) => Math.min(prev + 1, 2));
+  React.useEffect(() => {
+    setLocalData({
+      firstName: data.firstName || "",
+      lastName: data.lastName || "",
+      birthDate: data.birthDate || "",
+      gender: data.gender || "",
+      roles: data.roles || []
+    });
+  }, [data]);
+
+  const handleNext = () => {
+    setData((prev) => ({ ...prev, ...localData }));
+    setStep((prev) => Math.min(prev + 1, 2));
+  };
 
   const handleChange = (field: string, value: string | string[]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setLocalData((prev) => ({ ...prev, [field]: value }));
   };
 
   const toggleRole = (role: string) => {
-    setFormData((prev) => {
+    setLocalData((prev) => {
       const updatedRoles = prev.roles.includes(role)
         ? prev.roles.filter((r) => r !== role)
         : [...prev.roles, role];
       return { ...prev, roles: updatedRoles };
     });
+  };
+
+  const handleSubmit = async () => {
+    setData((prev) => ({ ...prev, ...localData }));
+
+    const payload = {
+      birthday: data.birthDate || localData.birthDate,
+      name: data.firstName || localData.firstName,
+      surname: data.lastName || localData.lastName,
+      sex: data.gender || localData.gender,
+      role: (data.roles && data.roles[0]) || (localData.roles[0] || ""),
+      email: data.email,
+      password: data.password
+    };
+      console.log("📦 Отправляем в API:", payload); // ← ← ← ВОТ ЭТА СТРОКА
+
+    try {
+      await api.post("/api/users/register", payload);
+
+      alert("Регистрация прошла успешно!");
+    } catch (error) {
+      console.error("Ошибка при регистрации:", error);
+        console.log("Детали от сервера:", error.response?.data); // <- добавь это
+
+      alert("Ошибка при регистрации. Проверьте данные.");
+    }
   };
 
   const renderStep = () => {
@@ -129,14 +170,14 @@ const OnboardingForm: React.FC = () => {
             <FieldWrapper>
               <StyledTextField
                 label="Имя"
-                value={formData.firstName}
+                value={localData.firstName}
                 onChange={(e) => handleChange("firstName", e.target.value)}
               />
             </FieldWrapper>
             <FieldWrapper>
               <StyledTextField
                 label="Фамилия"
-                value={formData.lastName}
+                value={localData.lastName}
                 onChange={(e) => handleChange("lastName", e.target.value)}
               />
             </FieldWrapper>
@@ -153,7 +194,7 @@ const OnboardingForm: React.FC = () => {
             <FieldWrapper>
               <StyledTextField
                 type="date"
-                value={formData.birthDate}
+                value={localData.birthDate}
                 onChange={(e) => handleChange("birthDate", e.target.value)}
                 InputLabelProps={{ shrink: true }}
                 label="Дата рождения"
@@ -163,7 +204,7 @@ const OnboardingForm: React.FC = () => {
               <StyledTextField
                 select
                 label="Пол"
-                value={formData.gender}
+                value={localData.gender}
                 onChange={(e) => handleChange("gender", e.target.value)}
               >
                 <MenuItem value="Мужской">Мужской</MenuItem>
@@ -188,7 +229,7 @@ const OnboardingForm: React.FC = () => {
                     key={role}
                     control={
                       <Checkbox
-                        checked={formData.roles.includes(role)}
+                        checked={localData.roles.includes(role)}
                         onChange={() => toggleRole(role)}
                       />
                     }
@@ -197,9 +238,7 @@ const OnboardingForm: React.FC = () => {
                 )
               )}
             </Box>
-            <SubmitButton onClick={() => alert(JSON.stringify(formData, null, 2))}>
-              Завершить
-            </SubmitButton>
+            <SubmitButton onClick={handleSubmit}>Завершить</SubmitButton>
           </motion.div>
         );
       default:

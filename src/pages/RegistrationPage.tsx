@@ -11,9 +11,11 @@ import {
 import { styled } from "@mui/system";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useNavigate } from "react-router-dom"; // 👈 добавлено
+import { useRegistration } from "../RegistrationContext"; // 👈 добавлено
 
 const Background = styled(Box)({
-  height: "100vh", // ЗАМЕНА
+  height: "100vh",
   width: "100vw",
   backgroundColor: "#fff",
   display: "flex",
@@ -21,7 +23,6 @@ const Background = styled(Box)({
   justifyContent: "center",
   padding: "20px"
 });
-
 
 const FormContainer = styled(Box)({
   width: "400px",
@@ -76,8 +77,29 @@ const SubmitButton = styled(Button)({
 });
 
 const RegistrationPage: React.FC = () => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [confirmPassword, setConfirmPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
+
+  const navigate = useNavigate(); // 👈 хук навигации
+  const { setData } = useRegistration(); // 👈 доступ к контексту
+
+  const handleSubmit = () => {
+    if (password !== confirmPassword) {
+      alert("Пароли не совпадают");
+      return;
+    }
+
+    setData(prev => ({
+      ...prev,
+      email,
+      password,
+    }));
+
+    navigate("/onboarding-form"); // 👈 замени на нужный путь
+  };
 
   return (
     <Background>
@@ -86,12 +108,16 @@ const RegistrationPage: React.FC = () => {
 
         <StyledTextField
           label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           variant="outlined"
           type="email"
         />
 
         <StyledTextField
           label="Пароль"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           variant="outlined"
           type={showPassword ? "text" : "password"}
           InputProps={{
@@ -107,6 +133,8 @@ const RegistrationPage: React.FC = () => {
 
         <StyledTextField
           label="Повторите пароль"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           variant="outlined"
           type={showConfirm ? "text" : "password"}
           InputProps={{
@@ -120,7 +148,9 @@ const RegistrationPage: React.FC = () => {
           }}
         />
 
-        <SubmitButton>Зарегистрироваться</SubmitButton>
+        <SubmitButton onClick={handleSubmit}>
+          Зарегистрироваться
+        </SubmitButton>
 
         <Box textAlign="center">
           <Typography fontSize="14px" color="#6B7280" component="span">
