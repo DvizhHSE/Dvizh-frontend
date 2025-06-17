@@ -288,7 +288,7 @@ const EventsPage = () => {
                 name={card.name}
                 location={card.location}
                 data={card.date}
-                imageUrl={card.image?.[0] || ""}
+                imageUrl={card.photos?.[0] || ""}
               />
               <IconButton 
                 onClick={(e) => {
