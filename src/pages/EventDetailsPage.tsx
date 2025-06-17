@@ -208,6 +208,15 @@ const EventDetailsPage = () => {
           setIsRegistered(isUserRegistered);
         })
         .catch((err) => console.error('Ошибка проверки регистрации:', err));
+
+      api
+        .get(`/api/users/${userId}/favorites`)
+        .then((res) => {
+          const favoriteEvents = res.data;
+          const isEventFavorite = favoriteEvents.some((event: any) => event._id === eventData);
+          setLiked(isEventFavorite);
+        })
+        .catch((err) => console.error('Ошибка проверки избранного:', err));
     }
   }, [eventData, userId]);
 
@@ -221,6 +230,17 @@ const EventDetailsPage = () => {
     } catch (error) {
       console.error('Ошибка при регистрации:', error);
       setShowError(true);
+    }
+  };
+
+  const handleFavoriteClick = async () => {
+    if (!userId || !eventData) return;
+
+    try {
+      await api.post(`/api/users/${userId}/favorites/${eventData}`);
+      setLiked(!liked);
+    } catch (error) {
+      console.error('Ошибка при добавлении в избранное:', error);
     }
   };
 
@@ -286,7 +306,7 @@ const EventDetailsPage = () => {
                 </RegisterButtonText>
               </RegisterButton>
 
-              <HeartButton onClick={() => setLiked(!liked)} aria-label="like">
+              <HeartButton onClick={handleFavoriteClick} aria-label="like">
                 {liked ? (
                   <FavoriteIcon style={{ color: '#F16645', fontSize: 48 }} />
                 ) : (
