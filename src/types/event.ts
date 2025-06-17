@@ -8,7 +8,7 @@ export interface Event {
   time?: string;
   age_limit: string;
   for_roles: string[]; // массив ролей
-  organizers: string[]; // массив строк
+  organizers: string; // массив строк
   description: string;
 }
 

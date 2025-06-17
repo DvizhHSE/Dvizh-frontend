@@ -240,7 +240,7 @@ const EventDetailsPage = () => {
             </InfoRow>
             <InfoRow>
               <InfoLabel>Организаторы:</InfoLabel>
-              <InfoValue>{eventDetails.organizers?.join(', ') || ''}</InfoValue>
+              <InfoValue>{eventDetails.organizers || ''}</InfoValue>
             </InfoRow>
 
             <RegisterWrapper>
